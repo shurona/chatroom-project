@@ -1,3 +1,19 @@
 spring:
+  config:
+    import: optional:file:.env.local[.properties]
   application:
     name: chat
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+#    properties:
+#      hibernate:
+#        show_sql: true # sql ??
+#        format_sql: true # SQL ? ???? ??
+#        highlight_sql: true # SQL ? ? ??
