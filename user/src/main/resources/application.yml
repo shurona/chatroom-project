@@ -17,3 +17,7 @@ spring:
 #        show_sql: true # sql ??
 #        format_sql: true # SQL ? ???? ??
 #        highlight_sql: true # SQL ? ? ??
+
+# ??
+server:
+  port: 19100

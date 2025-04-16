@@ -11,9 +11,13 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 #    properties:
 #      hibernate:
 #        show_sql: true # sql ??
 #        format_sql: true # SQL ? ???? ??
 #        highlight_sql: true # SQL ? ? ??
+
+# ??
+server:
+  port: 19101
