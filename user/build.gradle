@@ -30,6 +30,11 @@ dependencies {
 	// jpa
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+	// crypto 라이브러리만 추가
+	implementation group: 'org.springframework.security',
+			name: 'spring-security-crypto',
+			version: '6.4.4'
+
 	// MYSQL
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
@@ -40,6 +45,10 @@ dependencies {
 	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// testDB
+	testRuntimeOnly 'com.h2database:h2'
+
 }
 
 tasks.named('test') {
