@@ -20,14 +20,17 @@ public class JpaAuditConfig implements AuditorAware<Long> {
             = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
         Long userId = -1L;
-        HttpServletRequest request = attributes.getRequest();
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
 
-        // request의 세션에서 userId를 갖고 온다.
-        HttpSession session = request.getSession();
-        Long sessionUserId = (Long) session.getAttribute("userId");
-        if (sessionUserId != null) {
-            userId = sessionUserId;
+            // request의 세션에서 userId를 갖고 온다.
+            HttpSession session = request.getSession();
+            Long sessionUserId = (Long) session.getAttribute("userId");
+            if (sessionUserId != null) {
+                userId = sessionUserId;
+            }
         }
+
         return Optional.of(userId);
     }
 }
