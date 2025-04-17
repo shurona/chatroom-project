@@ -1,0 +1,61 @@
+package com.shurona.chat.user.application;
+
+import com.shurona.chat.user.domain.model.User;
+import com.shurona.chat.user.infrastructure.UserJpaRepository;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+@Service
+public class UserServiceImpl implements UserService{
+
+    private final UserJpaRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    @Override
+    public Long saveUser(String username, String password, String description, String phoneNumber){
+
+        User newUser = User.createUser(username, description, phoneNumber);
+        newUser.settingPassword(passwordEncoder.encode(password));
+
+        User save = userRepository.save(newUser);
+
+        return save.getId();
+    }
+
+    @Override
+    public User findUserById(Long userId){
+        return findByUserByIdCheckExist(userId);
+    }
+
+    @Override
+    public void findUserList() {
+        //TODO: 유저 목록 조회 시 구현
+    }
+
+    @Transactional
+    @Override
+    public void deleteUser(Long userId){
+        User user = findByUserByIdCheckExist(userId);
+        user.deleteUser();
+
+    }
+
+    /*
+        private method
+     */
+    public User findByUserByIdCheckExist(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+            new HttpClientErrorException(HttpStatus.BAD_REQUEST)
+        );
+    }
+
+
+}

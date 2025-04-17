@@ -12,14 +12,18 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "_User")
 public class User extends BaseEntity {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,5 +45,20 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     List<Friend> friendList = new ArrayList<>();
 
+    public static User createUser(String username, String description, String phoneNumber) {
+        User user = new User();
+        user.username = username;
+        user.description = description;
+        user.phoneNumber = new UserPhoneNumber(phoneNumber);
 
+        return user;
+    }
+
+    public void settingPassword(String password) {
+        this.password = password;
+    }
+
+    public void deleteUser() {
+        this.isDeleted = true;
+    }
 }
