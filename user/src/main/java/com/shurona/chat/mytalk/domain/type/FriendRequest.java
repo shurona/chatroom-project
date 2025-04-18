@@ -1,4 +1,4 @@
-package com.shurona.chat.user.domain.type;
+package com.shurona.chat.mytalk.domain.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

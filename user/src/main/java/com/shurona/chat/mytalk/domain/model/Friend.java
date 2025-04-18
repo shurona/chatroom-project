@@ -1,8 +1,7 @@
-package com.shurona.chat.user.domain.model;
+package com.shurona.chat.mytalk.domain.model;
 
-import com.fasterxml.jackson.databind.ser.Serializers.Base;
-import com.shurona.chat.user.common.entity.BaseEntity;
-import com.shurona.chat.user.domain.type.FriendRequest;
+import com.shurona.chat.mytalk.common.entity.BaseEntity;
+import com.shurona.chat.mytalk.domain.type.FriendRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -1,4 +1,4 @@
-package com.shurona.chat.user;
+package com.shurona.chat.mytalk;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

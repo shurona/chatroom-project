@@ -1,8 +1,7 @@
-package com.shurona.chat.user.domain.vo;
+package com.shurona.chat.mytalk.domain.vo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
 import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;

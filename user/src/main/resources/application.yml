@@ -21,3 +21,6 @@ spring:
 # ??
 server:
   port: 19100
+  servlet:
+    session:
+      tracking-modes: cookie

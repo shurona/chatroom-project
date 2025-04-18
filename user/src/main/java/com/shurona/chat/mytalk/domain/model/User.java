@@ -1,7 +1,7 @@
-package com.shurona.chat.user.domain.model;
+package com.shurona.chat.mytalk.domain.model;
 
-import com.shurona.chat.user.common.entity.BaseEntity;
-import com.shurona.chat.user.domain.vo.UserPhoneNumber;
+import com.shurona.chat.mytalk.common.entity.BaseEntity;
+import com.shurona.chat.mytalk.domain.vo.UserPhoneNumber;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -29,8 +29,8 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column
-    private String username;
+    @Column(unique = true, name = "username")
+    private String loginId;
 
     @Column
     private String description;
@@ -45,9 +45,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     List<Friend> friendList = new ArrayList<>();
 
-    public static User createUser(String username, String description, String phoneNumber) {
+    public static User createUser(String loginId, String description, String phoneNumber) {
         User user = new User();
-        user.username = username;
+        user.loginId = loginId;
         user.description = description;
         user.phoneNumber = new UserPhoneNumber(phoneNumber);
 

@@ -1,7 +1,7 @@
-package com.shurona.chat.user.application;
+package com.shurona.chat.mytalk.application;
 
-import com.shurona.chat.user.domain.model.User;
-import com.shurona.chat.user.infrastructure.UserJpaRepository;
+import com.shurona.chat.mytalk.domain.model.User;
+import com.shurona.chat.mytalk.infrastructure.UserJpaRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,9 +20,9 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public Long saveUser(String username, String password, String description, String phoneNumber){
+    public Long saveUser(String loginId, String password, String description, String phoneNumber){
 
-        User newUser = User.createUser(username, description, phoneNumber);
+        User newUser = User.createUser(loginId, description, phoneNumber);
         newUser.settingPassword(passwordEncoder.encode(password));
 
         User save = userRepository.save(newUser);
@@ -33,6 +33,13 @@ public class UserServiceImpl implements UserService{
     @Override
     public User findUserById(Long userId){
         return findByUserByIdCheckExist(userId);
+    }
+
+    @Override
+    public User findUserByLoginId(String loginId) {
+        Optional<User> user = userRepository.findByLoginId(loginId);
+
+        return user.orElse(null);
     }
 
     @Override
@@ -48,6 +55,17 @@ public class UserServiceImpl implements UserService{
 
     }
 
+    @Override
+    public boolean checkLoginIdDuplicated(String loginId) {
+        Optional<User> user = userRepository.findByLoginId(loginId);
+        return user.isPresent();
+    }
+
+    @Override
+    public boolean checkPasswordCorrect(String inputPassword, String dbPassword) {
+        return passwordEncoder.matches(inputPassword, dbPassword);
+    }
+
     /*
         private method
      */
@@ -56,6 +74,4 @@ public class UserServiceImpl implements UserService{
             new HttpClientErrorException(HttpStatus.BAD_REQUEST)
         );
     }
-
-
 }
