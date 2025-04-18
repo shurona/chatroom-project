@@ -1,6 +1,7 @@
-package com.shurona.chat.mytalk.user.domain.model;
+package com.shurona.chat.mytalk.friend.domain.model;
 
 import com.shurona.chat.mytalk.common.entity.BaseEntity;
+import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.user.domain.type.FriendRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
