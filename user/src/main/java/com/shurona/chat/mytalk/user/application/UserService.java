@@ -8,6 +8,8 @@ public interface UserService {
 
     public boolean checkLoginIdDuplicated(String loginId);
 
+    public boolean checkPhoneNumberDuplicated(String phoneNumber);
+
     public boolean checkPasswordCorrect(String inputPassword, String dbPassword);
 
     public User findUserById(Long userId);

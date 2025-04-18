@@ -1,6 +1,7 @@
 package com.shurona.chat.mytalk.user.application;
 
 import com.shurona.chat.mytalk.user.domain.model.User;
+import com.shurona.chat.mytalk.user.domain.vo.UserPhoneNumber;
 import com.shurona.chat.mytalk.user.infrastructure.UserJpaRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,12 @@ public class UserServiceImpl implements UserService{
     @Override
     public boolean checkLoginIdDuplicated(String loginId) {
         Optional<User> user = userRepository.findByLoginId(loginId);
+        return user.isPresent();
+    }
+
+    @Override
+    public boolean checkPhoneNumberDuplicated(String phoneNumber) {
+        Optional<User> user = userRepository.findByPhoneNumber(new UserPhoneNumber(phoneNumber));
         return user.isPresent();
     }
 

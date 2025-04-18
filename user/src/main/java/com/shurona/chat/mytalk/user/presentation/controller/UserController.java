@@ -28,7 +28,11 @@ public class UserController {
 
         // 아이디 중복 확인
         if (userService.checkLoginIdDuplicated(form.loginId())) {
-            bindingResult.rejectValue("loginId", "error.username", "이미 사용 중인 아이디입니다");
+            bindingResult.rejectValue("loginId", "error.loginId", "이미 사용 중인 아이디입니다");
+        }
+
+        if (userService.checkPhoneNumberDuplicated(form.phoneNumber())) {
+            bindingResult.rejectValue("phoneNumber", "error.phoneNumber", "이미 등록된 휴대전화입니다");
         }
 
         // 오류가 있으면 회원가입 폼으로 다시 이동
