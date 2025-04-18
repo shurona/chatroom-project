@@ -1,6 +1,7 @@
 package com.shurona.chat.mytalk.application;
 
-import com.shurona.chat.mytalk.domain.model.User;
+import com.shurona.chat.mytalk.user.application.UserService;
+import com.shurona.chat.mytalk.user.domain.model.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
