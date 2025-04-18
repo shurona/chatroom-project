@@ -28,7 +28,7 @@ class UserServiceImplTest {
 
         User userA = userService.findUserById(userId);
 
-        Assertions.assertThat(username).isEqualTo(userA.getUsername());
+        Assertions.assertThat(username).isEqualTo(userA.getLoginId());
     }
 
 }
