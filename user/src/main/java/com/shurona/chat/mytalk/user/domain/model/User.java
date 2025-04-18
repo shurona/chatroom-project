@@ -1,6 +1,6 @@
 package com.shurona.chat.mytalk.user.domain.model;
 
-import com.shurona.chat.mytalk.user.common.entity.BaseEntity;
+import com.shurona.chat.mytalk.common.entity.BaseEntity;
 import com.shurona.chat.mytalk.user.domain.vo.UserPhoneNumber;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

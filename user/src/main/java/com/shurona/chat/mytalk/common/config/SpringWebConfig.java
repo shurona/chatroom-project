@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.user.common.config;
+package com.shurona.chat.mytalk.common.config;
 
 import com.shurona.chat.mytalk.user.presentation.interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.user.common.variable;
+package com.shurona.chat.mytalk.common.variable;
 
 public class StaticVariable {
 

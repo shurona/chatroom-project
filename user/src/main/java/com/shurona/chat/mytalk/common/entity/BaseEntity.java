@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.user.common.entity;
+package com.shurona.chat.mytalk.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

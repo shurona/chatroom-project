@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.user.common.config;
+package com.shurona.chat.mytalk.common.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
