@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="../fragments/layout :: head('친구 목록')">
+</head>
+<body>
+<div th:replace="fragments/layout :: nav"></div>
+
+<div class="container main-container">
+  <div class="page-header">
+    <h1>친구 목록</h1>
+    <button class="btn btn-add" id="btnAddFriend">
+      <i class="fas fa-user-plus"></i> 친구 추가
+    </button>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="friendSearch" placeholder="친구 검색...">
+    <i class="fas fa-search search-icon"></i>
+  </div>
+
+  <div class="friends-list">
+    <!-- 친구가 없는 경우 -->
+    <div th:if="${#lists.isEmpty(friends)}" class="empty-list">
+      <i class="fas fa-user-friends empty-icon"></i>
+      <p>아직 친구가 없습니다</p>
+      <p class="sub-text">상단의 '친구 추가' 버튼을 눌러 친구를 추가해보세요!</p>
+    </div>
+
+    <!-- 친구 목록 -->
+    <div th:unless="${#lists.isEmpty(friends)}" class="friend-items">
+      <div th:each="friend : ${friends}" class="friend-item">
+        <div class="friend-avatar">
+          <div class="avatar">
+            <span th:text="${friend.loginId.substring(0,1).toUpperCase()}">U</span>
+          </div>
+          <span class="status-indicator"
+                th:classappend="${friend.active ? 'online' : 'offline'}"></span>
+        </div>
+        <div class="friend-info">
+          <h3 th:text="${friend.loginId}">사용자명</h3>
+          <p th:text="${friend.description ?: '상태메시지가 없습니다'}">상태메시지</p>
+        </div>
+        <div class="friend-actions">
+          <button class="btn btn-icon btn-chat" th:data-id="${friend.id}">
+            <i class="fas fa-comment"></i>
+          </button>
+          <button class="btn btn-icon btn-more">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 친구 추가 모달 -->
+<div id="addFriendModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>친구 추가</h2>
+      <span class="close">&times;</span>
+    </div>
+    <div class="modal-body">
+      <form th:action="@{/friends/add}" method="post">
+        <div class="form-group">
+          <label for="friendId">친구 아이디</label>
+          <input type="text" id="friendId" name="friendId" placeholder="친구의 아이디를 입력하세요" required>
+        </div>
+        <button type="submit" class="btn btn-primary">친구 요청 보내기</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  // 모달 기능
+  const modal = document.getElementById('addFriendModal');
+  const btnAddFriend = document.getElementById('btnAddFriend');
+  const closeBtn = document.querySelector('.close');
+
+  btnAddFriend.onclick = function() {
+      modal.style.display = "block";
+  }
+
+  closeBtn.onclick = function() {
+      modal.style.display = "none";
+  }
+
+  window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+  }
+
+  // 채팅 버튼
+  document.querySelectorAll('.btn-chat').forEach(button => {
+      button.addEventListener('click', function() {
+          const friendId = this.getAttribute('data-id');
+          window.location.href = '/chat/start?friendId=' + friendId;
+      });
+  });
+</script>
+</body>
+</html>

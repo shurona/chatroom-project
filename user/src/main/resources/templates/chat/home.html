@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="../fragments/layout :: head('채팅방 목록')">
+</head>
+<body>
+<div th:replace="fragments/layout :: nav"></div>
+
+<div class="container main-container">
+  <div class="page-header">
+    <h1>채팅방</h1>
+    <button class="btn btn-add" id="btnCreateRoom">
+      <i class="fas fa-plus"></i> 새 채팅방
+    </button>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="roomSearch" placeholder="채팅방 검색...">
+    <i class="fas fa-search search-icon"></i>
+  </div>
+
+  <div class="chat-rooms">
+    <!-- 채팅방이 없는 경우 -->
+    <div th:if="${#lists.isEmpty(chatRooms)}" class="empty-list">
+      <i class="fas fa-comments empty-icon"></i>
+      <p>참여 중인 채팅방이 없습니다</p>
+      <p class="sub-text">새로운 채팅방을 만들거나 친구와 대화를 시작해보세요!</p>
+    </div>
+
+    <!-- 채팅방 목록 -->
+    <div th:unless="${#lists.isEmpty(chatRooms)}" class="room-items">
+      <div th:each="room : ${chatRooms}" class="room-item">
+        <div class="room-avatar">
+          <div class="avatar">
+            <span th:text="${room.name.substring(0,1).toUpperCase()}">R</span>
+          </div>
+          <span class="unread-badge" th:if="${room.unreadCount > 0}"
+                th:text="${room.unreadCount}">0</span>
+        </div>
+        <div class="room-info">
+          <h3 th:text="${room.name}">채팅방 이름</h3>
+          <p th:text="${room.lastMessage ?: '새로운 채팅방입니다'}">마지막 메시지</p>
+          <span class="last-time" th:if="${room.lastMessageTime != null}"
+                th:text="${#temporals.format(room.lastMessageTime, 'MM/dd HH:mm')}">
+                            00/00 00:00
+                        </span>
+        </div>
+        <a th:href="@{/chat/room/{id}(id=${room.id})}" class="room-link"></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 채팅방 생성 모달 -->
+<div id="createRoomModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>새 채팅방 만들기</h2>
+      <span class="close">&times;</span>
+    </div>
+    <div class="modal-body">
+      <form th:action="@{/chatrooms/create}" method="post">
+        <div class="form-group">
+          <label for="roomName">채팅방 이름</label>
+          <input type="text" id="roomName" name="roomName" placeholder="채팅방 이름을 입력하세요" required>
+        </div>
+        <div class="form-group">
+          <label for="description">설명</label>
+          <textarea id="description" name="description" placeholder="채팅방에 대한 설명을 입력하세요"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">채팅방 만들기</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  // 모달 기능
+  const modal = document.getElementById('createRoomModal');
+  const btnCreate = document.getElementById('btnCreateRoom');
+  const closeBtn = document.querySelector('.close');
+
+  btnCreate.onclick = function() {
+      modal.style.display = "block";
+  }
+
+  closeBtn.onclick = function() {
+      modal.style.display = "none";
+  }
+
+  window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+  }
+</script>
+</body>
+</html>

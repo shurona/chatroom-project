@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${title}">채팅 서비스</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<body>
+<!-- 네비게이션 바 -->
+<nav th:fragment="nav" class="main-nav">
+  <div class="nav-container">
+    <div class="logo">
+      <a th:href="@{/}">
+        <i class="fas fa-comments"></i>
+        <span>채팅서비스</span>
+      </a>
+    </div>
+
+    <div class="nav-links">
+      <a th:href="@{/friends}" class="nav-link" th:classappend="${currentPage == 'friends' ? 'active' : ''}">
+        <i class="fas fa-user-friends"></i> 친구 목록
+      </a>
+      <a th:href="@{/chatrooms}" class="nav-link" th:classappend="${currentPage == 'chatrooms' ? 'active' : ''}">
+        <i class="fas fa-comments"></i> 채팅방
+      </a>
+    </div>
+
+    <div class="user-menu">
+      <div class="user-info" th:if="${session.loginUser != null}">
+        <span th:text="${session.loginUser.loginId}">사용자</span>
+        <div class="dropdown-menu">
+          <a th:href="@{/profile}">내 프로필</a>
+          <a th:href="@{/settings}">설정</a>
+          <a th:href="@{/logout}">로그아웃</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+</body>
+</html>
