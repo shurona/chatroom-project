@@ -1,9 +1,10 @@
 package com.shurona.chat.mytalk.user.presentation.controller;
 
+import com.shurona.chat.mytalk.friend.service.FriendService;
 import com.shurona.chat.mytalk.user.application.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.user.presentation.dto.LoginForm;
-import com.shurona.chat.mytalk.user.presentation.session.UserSession;
+import com.shurona.chat.mytalk.common.session.UserSession;
 import com.shurona.chat.mytalk.common.variable.StaticVariable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -34,11 +35,7 @@ public class LoginController {
             return "user/home";
         }
 
-        User user = userService.findUserById(userSession.userId());
-        model.addAttribute("user", user);
-
-
-        return "user/home";
+        return "redirect:/friends/v1";
     }
 
     @PostMapping("/login/v1")
@@ -48,8 +45,6 @@ public class LoginController {
         BindingResult bindingResult,
         HttpServletRequest request
     ) {
-        System.out.println(form);
-
         User user = userService.findUserByLoginId(form.loginId());
 
         // 아이디가 없는 경우
@@ -71,7 +66,7 @@ public class LoginController {
         session.setMaxInactiveInterval(StaticVariable.LOGIN_SESSION_TIME);
         session.setAttribute(StaticVariable.LOGIN_USER, userSession);
 
-        return "redirect:" + redirectURL;
+        return "redirect:" + "/friends/v1";
     }
 
     @GetMapping("/login/v1")
