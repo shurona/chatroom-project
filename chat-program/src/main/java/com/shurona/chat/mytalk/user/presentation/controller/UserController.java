@@ -40,15 +40,13 @@ public class UserController {
             return "user/signup";
         }
 
-        System.out.println(form);
-
         userService.saveUser(
             form.loginId(), form.password(), form.description(), form.phoneNumber());
 
         return "redirect:" + "/login/v1";
     }
 
-    @GetMapping("form")
+    @GetMapping("/form")
     public String createUserForm(
         @Validated @ModelAttribute("createUserForm") CreateUserForm form
     ) {
