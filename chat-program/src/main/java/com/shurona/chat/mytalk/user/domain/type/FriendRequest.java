@@ -9,7 +9,8 @@ public enum FriendRequest {
 
     REQUESTED(RequestStatus.REQUEST),
     ACCEPTED(RequestStatus.ACCEPTED),
-    REFUSED(RequestStatus.REFUSED);
+    REFUSED(RequestStatus.REFUSED),
+    BANNED(RequestStatus.BANNED);
 //
     private final String status;
 
@@ -18,6 +19,7 @@ public enum FriendRequest {
         public static final String REQUEST = "FRIEND_REQUEST";
         public static final String ACCEPTED = "FRIEND_ACCEPTED";
         public static final String REFUSED = "FRIEND_REFUSED";
+        public static final String BANNED = "FRIEND_BANNED";
 
     }
 }

@@ -48,9 +48,12 @@
           <button class="btn btn-icon btn-chat" th:data-id="${friend.id}">
             <i class="fas fa-comment"></i>
           </button>
-          <button class="btn btn-icon btn-more">
-            <i class="fas fa-ellipsis-v"></i>
-          </button>
+          <form th:action="@{/friends/v1/banned}" method="post" style="display:inline;">
+            <input type="hidden" name="requestId" th:value="${friend.id}" />
+            <button type="submit" class="btn btn-icon btn-trash">
+              <i class="fas fa-trash"></i>
+            </button>
+          </form>
         </div>
       </div>
     </div>
@@ -84,10 +87,21 @@
   const btnAddFriend = document.getElementById('btnAddFriend');
   const closeBtn = document.querySelector('.close');
 
+  // 모달을 띄우는 자바스크립트
   btnAddFriend.onclick = function() {
       modal.style.display = "block";
   }
 
+  // controller 에서 모달을 보여준다고 값을 전달하면 모달을 띄운다.
+  let showAddFriendModal = /*[[${showAddFriendModal}]]*/ false;
+  if (showAddFriendModal) {
+      // 모달을 열어주는 코드 (아래는 예시)
+      document.addEventListener('DOMContentLoaded', function() {
+          document.getElementById('addFriendModal').style.display = 'block';
+      });
+  }
+
+  // 모달을 닫기 위한 자바스크립트
   closeBtn.onclick = function() {
       modal.style.display = "none";
   }
@@ -106,9 +120,19 @@
       });
   });
 
+  // 친구 요청 버튼을 클릭했을 때 페이지를 이동한다.
   document.getElementById('btnFriendRequests').onclick = function() {
       window.location.href = '/friends/v1/requests';
   };
+
+  // 버튼 체크
+  /*
+  document.querySelectorAll('.btn-trash').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      console.log('휴지통 버튼이 클릭되었습니다!' + btn.dataset.id);
+    });
+  });
+  */
 </script>
 </body>
 </html>

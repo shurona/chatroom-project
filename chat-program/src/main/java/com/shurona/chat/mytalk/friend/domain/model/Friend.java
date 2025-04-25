@@ -1,6 +1,10 @@
 package com.shurona.chat.mytalk.friend.domain.model;
 
+import static com.shurona.chat.mytalk.friend.common.exception.FriendErrorCode.INVALID_INPUT;
+
 import com.shurona.chat.mytalk.common.entity.BaseEntity;
+import com.shurona.chat.mytalk.friend.common.exception.FriendErrorCode;
+import com.shurona.chat.mytalk.friend.common.exception.FriendException;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.user.domain.type.FriendRequest;
 import jakarta.persistence.Column;
@@ -74,11 +78,28 @@ public class Friend extends BaseEntity {
     }
 
     public void acceptFriendRequest() {
-        if (this.request != FriendRequest.REQUESTED) throw new IllegalStateException("이미 처리됨");
+        if (this.request != FriendRequest.REQUESTED) {
+            throw new FriendException(
+                INVALID_INPUT.getStatus(),
+                INVALID_INPUT.getMessage());
+        }
         this.request = FriendRequest.ACCEPTED;
     }
     public void refuseFriendRequest() {
-        if (this.request != FriendRequest.REQUESTED) throw new IllegalStateException("이미 처리됨");
+        if (this.request != FriendRequest.REQUESTED) {
+            throw new FriendException(
+                INVALID_INPUT.getStatus(),
+                INVALID_INPUT.getMessage());
+        }
         this.request = FriendRequest.REFUSED;
+    }
+    public void bannedFriendRequest() {
+        // 이미 밴 되어 있는 상태면 불필요한 입력은 막는다.
+        if (this.request == FriendRequest.BANNED) {
+            throw new FriendException(
+                INVALID_INPUT.getStatus(),
+                INVALID_INPUT.getMessage());
+        }
+        this.request = FriendRequest.BANNED;
     }
 }

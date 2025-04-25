@@ -89,6 +89,8 @@ public class FriendServiceImpl implements FriendService {
             friend.acceptFriendRequest();
         } else if (status.equals(FriendRequest.REFUSED)) {
             friend.refuseFriendRequest();
+        } else if (status.equals(FriendRequest.BANNED)) {
+            friend.bannedFriendRequest();
         }
         return friend;
     }

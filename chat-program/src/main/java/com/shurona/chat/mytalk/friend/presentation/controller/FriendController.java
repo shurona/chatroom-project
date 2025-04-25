@@ -117,6 +117,9 @@ public class FriendController {
         return "redirect:/friends/v1";
     }
 
+    /*
+        유저들의 상태 변경을 위한 요청들
+     */
     @PostMapping("/accept")
     public String acceptFriendRequest(
         HttpSession session,
@@ -142,5 +145,18 @@ public class FriendController {
 
         return "redirect:/friends/v1/requests";
 
+    }
+
+    @PostMapping("/banned")
+    public String bannedFriend(
+        HttpSession session,
+        @RequestParam("requestId") Long requestId
+    ) {
+        UserSession currentUser = (UserSession) session.getAttribute(LOGIN_USER);
+
+        Friend friendById = friendService.findFriendById(requestId);
+        friendService.changeStatusById(friendById.getId(), FriendRequest.BANNED);
+
+        return "redirect:/friends/v1";
     }
 }
