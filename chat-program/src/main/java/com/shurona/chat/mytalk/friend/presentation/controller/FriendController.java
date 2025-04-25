@@ -7,7 +7,7 @@ import com.shurona.chat.mytalk.friend.domain.model.Friend;
 import com.shurona.chat.mytalk.friend.presentation.dto.AddFriendForm;
 import com.shurona.chat.mytalk.friend.presentation.dto.FriendRequestDto;
 import com.shurona.chat.mytalk.friend.service.FriendService;
-import com.shurona.chat.mytalk.user.application.UserService;
+import com.shurona.chat.mytalk.user.service.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
 import jakarta.servlet.http.HttpSession;

@@ -1,6 +1,6 @@
 package com.shurona.chat.mytalk.user.presentation.controller;
 
-import com.shurona.chat.mytalk.user.application.UserService;
+import com.shurona.chat.mytalk.user.service.UserService;
 import com.shurona.chat.mytalk.user.presentation.dto.CreateUserForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

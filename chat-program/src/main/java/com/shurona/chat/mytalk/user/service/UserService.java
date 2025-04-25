@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.user.application;
+package com.shurona.chat.mytalk.user.service;
 
 import com.shurona.chat.mytalk.user.domain.model.User;
 

@@ -3,7 +3,7 @@ package com.shurona.chat.mytalk.friend.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
-import com.shurona.chat.mytalk.user.application.UserService;
+import com.shurona.chat.mytalk.user.service.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
 import java.util.List;
