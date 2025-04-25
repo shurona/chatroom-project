@@ -50,9 +50,12 @@ class FriendServiceImplTest {
         // when
         List<Friend> friendListBeforeSave = friendService.findAcceptedFriendListByUser(userA);
         Friend friend = friendService.saveFriend(userA, userB);
+
+        // 이때에는 request 이어야 한다.
+        assertThat(friend.getRequest()).isEqualTo(FriendRequest.REQUESTED);
+
         // 친구 수락
         friendService.changeStatusById(friend.getId(), FriendRequest.ACCEPTED);
-
         // 친구 목록 불러온다.
         List<Friend> friendListAfterSave = friendService.findAcceptedFriendListByUser(userA);
 
@@ -60,7 +63,38 @@ class FriendServiceImplTest {
         assertThat(friendListBeforeSave.size()).isEqualTo(0);
         assertThat(friendListAfterSave.size()).isEqualTo(1);
         assertThat(friend.getUser().getId()).isEqualTo(userA.getId());
-
+        assertThat(friend.getRequest()).isEqualTo(FriendRequest.ACCEPTED);
     }
 
+    @Test
+    public void 이미_친구_인_경우() {
+
+        //given
+        String username = "username";
+        String password = "password";
+        String description = "description";
+        String phoneNumber = "010-202-2020";
+
+        Long userId = userService.saveUser(username, password, description, phoneNumber);
+
+        String username2 = "username2";
+        String password2 = "password2";
+        String description2 = "description2";
+        String phoneNumber2 = "010-202-2022";
+
+        Long userId2 = userService.saveUser(username2, password2, description2, phoneNumber2);
+
+        User userA = userService.findUserById(userId);
+        User userB = userService.findUserById(userId2);
+
+        // when
+        Friend friend = friendService.saveFriend(userA, userB);
+        // 친구 수락
+        friendService.changeStatusById(friend.getId(), FriendRequest.ACCEPTED);
+        Friend reverseFriend = friendService.saveFriend(userB, userA);
+
+        //then
+        // 이미 수락한 경우 반대면 바로 수락이 되어야 한다.
+        assertThat(reverseFriend.getRequest()).isEqualTo(FriendRequest.ACCEPTED);
+    }
 }
