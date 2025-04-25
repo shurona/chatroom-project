@@ -1,5 +1,6 @@
 package com.shurona.chat.mytalk.friend.service;
 
+import static com.shurona.chat.mytalk.friend.common.exception.FriendErrorCode.FRIEND_ALREADY_EXIST;
 import static com.shurona.chat.mytalk.friend.common.exception.FriendErrorCode.INVALID_INPUT;
 
 import com.shurona.chat.mytalk.friend.common.exception.FriendErrorCode;
@@ -33,21 +34,22 @@ public class FriendServiceImpl implements FriendService {
             throw new FriendException(INVALID_INPUT.getStatus(), INVALID_INPUT.getMessage());
         }
 
-        Optional<Friend> dbFriend = friendRepository.findByUserAndFriend(user, friend);
+        Optional<Friend> dbFriend = friendRepository.findByUserAndFriend(friend, user);
 
         // 이미 존재 하는 경우에는 접근 제한
         if (dbFriend.isPresent()) {
-            throw new FriendException(INVALID_INPUT.getStatus(), INVALID_INPUT.getMessage());
+            throw new FriendException(FRIEND_ALREADY_EXIST.getStatus(), FRIEND_ALREADY_EXIST.getMessage());
         }
 
-        Optional<Friend> checkMutualFriendship = friendRepository.findByUserAndFriend(friend, user);
+        // 반대로 이미 존재하는지 확인한다.
+        Optional<Friend> checkMutualFriendship = friendRepository.findByUserAndFriend(user, friend);
 
         // 상대방이 친구 수락을 했으면 자동으로 수락을 한다.
         Friend newFriend;
         if (checkMutualFriendship.isPresent()) {
-            newFriend = Friend.acceptMutualFriend(user, friend);
+            newFriend = Friend.acceptMutualFriend(friend, user);
         } else {
-            newFriend = Friend.newFriend(user, friend);
+            newFriend = Friend.newFriend(friend, user);
         }
 
         return friendRepository.save(newFriend);
