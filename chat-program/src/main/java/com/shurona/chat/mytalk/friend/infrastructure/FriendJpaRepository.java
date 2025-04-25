@@ -2,7 +2,7 @@ package com.shurona.chat.mytalk.friend.infrastructure;
 
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
 import com.shurona.chat.mytalk.user.domain.model.User;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest;
+import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

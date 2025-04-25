@@ -3,12 +3,10 @@ package com.shurona.chat.mytalk.friend.domain.model;
 import static com.shurona.chat.mytalk.friend.common.exception.FriendErrorCode.INVALID_INPUT;
 
 import com.shurona.chat.mytalk.common.entity.BaseEntity;
-import com.shurona.chat.mytalk.friend.common.exception.FriendErrorCode;
 import com.shurona.chat.mytalk.friend.common.exception.FriendException;
 import com.shurona.chat.mytalk.user.domain.model.User;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest;
+import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

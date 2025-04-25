@@ -2,8 +2,7 @@ package com.shurona.chat.mytalk.friend.service;
 
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
 import com.shurona.chat.mytalk.user.domain.model.User;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest.RequestStatus;
+import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
 import java.util.List;
 
 public interface FriendService {

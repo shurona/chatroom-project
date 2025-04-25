@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
 import com.shurona.chat.mytalk.user.application.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest;
+import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

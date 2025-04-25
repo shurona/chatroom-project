@@ -3,13 +3,11 @@ package com.shurona.chat.mytalk.friend.service;
 import static com.shurona.chat.mytalk.friend.common.exception.FriendErrorCode.FRIEND_ALREADY_EXIST;
 import static com.shurona.chat.mytalk.friend.common.exception.FriendErrorCode.INVALID_INPUT;
 
-import com.shurona.chat.mytalk.friend.common.exception.FriendErrorCode;
 import com.shurona.chat.mytalk.friend.common.exception.FriendException;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
 import com.shurona.chat.mytalk.friend.infrastructure.FriendJpaRepository;
 import com.shurona.chat.mytalk.user.domain.model.User;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest.RequestStatus;
+import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
