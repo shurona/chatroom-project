@@ -45,15 +45,32 @@ public class Friend extends BaseEntity {
     @Column
     private boolean banned;
 
+    /*
+        처음 친구를 만드는 경우
+     */
     public static Friend newFriend(User user, User friend) {
-        Friend copy = new Friend();
+        Friend newFriend = new Friend();
 
-        copy.user = user;
-        copy.friend = friend;
-        copy.request = FriendRequest.REQUESTED;
-        copy.banned = false;
+        newFriend.user = user;
+        newFriend.friend = friend;
+        newFriend.request = FriendRequest.REQUESTED;
+        newFriend.banned = false;
 
-        return copy;
+        return newFriend;
+    }
+
+    /*
+        상대방이 이미 수락했으면 자동으로 친구 수락
+     */
+    public static Friend acceptMutualFriend(User user, User friend) {
+        Friend newFriend = new Friend();
+
+        newFriend.user = user;
+        newFriend.friend = friend;
+        newFriend.request = FriendRequest.ACCEPTED;
+        newFriend.banned = false;
+
+        return newFriend;
     }
 
     public void acceptFriendRequest() {

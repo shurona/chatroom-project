@@ -40,7 +40,16 @@ public class FriendServiceImpl implements FriendService {
             throw new FriendException(INVALID_INPUT.getStatus(), INVALID_INPUT.getMessage());
         }
 
-        Friend newFriend = Friend.newFriend(user, friend);
+        Optional<Friend> checkMutualFriendship = friendRepository.findByUserAndFriend(friend, user);
+
+        // 상대방이 친구 수락을 했으면 자동으로 수락을 한다.
+        Friend newFriend;
+        if (checkMutualFriendship.isPresent()) {
+            newFriend = Friend.acceptMutualFriend(user, friend);
+        } else {
+            newFriend = Friend.newFriend(user, friend);
+        }
+
         return friendRepository.save(newFriend);
 
     }
@@ -61,11 +70,12 @@ public class FriendServiceImpl implements FriendService {
         return friendRepository.findUserListByUserAndRequest(user, FriendRequest.REQUESTED);
     }
 
+    /*
+        아직 미구현
+     */
     @Override
     public Friend findFriendByUserAndFriend(User user, User friend) {
         Optional<Friend> friendInfo = friendRepository.findByUserAndFriend(friend, user);
-
-
         return null;
     }
 

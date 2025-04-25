@@ -59,6 +59,24 @@ public class FriendController {
         return "friend/home";
     }
 
+    @GetMapping("/requests")
+    public String requestFriendList(
+        HttpSession session,
+        Model model
+    ) {
+        UserSession currentUser = (UserSession) session.getAttribute(LOGIN_USER);
+
+        User user = userService.findUserById(currentUser.userId());
+
+        List<FriendRequestDto> friendRequestDtoList = FriendRequestDto.from(
+            friendService.findRequestedFriendListByUser(user)
+        );
+
+        model.addAttribute("friendRequests", friendRequestDtoList);
+
+        return "friend/request";
+    }
+
     @PostMapping("/new")
     public String addNewFriend(
         HttpSession session,
@@ -84,6 +102,12 @@ public class FriendController {
 
         // 에러 발생 확인
         if (bindingResult.hasErrors()) {
+            // 에러 발생 시 다시 리턴해 줘야 하므로 필요한 데이터를 넣어준다.
+            List<FriendRequestDto> friendList = FriendRequestDto.from(
+                friendService.findAcceptedFriendListByUser(user)
+            );
+            model.addAttribute("friends", friendList);
+            model.addAttribute("showAddFriendModal", true);
             return "friend/home";
         }
 
@@ -91,24 +115,6 @@ public class FriendController {
         friendService.saveFriend(user, friend);
 
         return "redirect:/friends/v1";
-    }
-
-    @GetMapping("requests")
-    public String requestFriendList(
-        HttpSession session,
-        Model model
-    ) {
-        UserSession currentUser = (UserSession) session.getAttribute(LOGIN_USER);
-
-        User user = userService.findUserById(currentUser.userId());
-
-        List<FriendRequestDto> friendRequestDtoList = FriendRequestDto.from(
-            friendService.findRequestedFriendListByUser(user)
-        );
-
-        model.addAttribute("friendRequests", friendRequestDtoList);
-
-        return "friend/request";
     }
 
     @PostMapping("/accept")
