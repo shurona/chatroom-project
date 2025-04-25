@@ -1,0 +1,145 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    padding: 40px 0;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: #3498db;
+    margin-bottom: 10px;
+}
+
+footer {
+    text-align: center;
+    padding: 30px 0;
+    color: #7f8c8d;
+    margin-top: 40px;
+}
+
+.main-nav {
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.logo i {
+    margin-right: 8px;
+    font-size: 1.4rem;
+}
+
+.main-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* 페이지 헤더 */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+}
+
+/* layout의 위의 버튼 링크들의 UI */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-link {
+    color: #555;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: #f0f7ff;
+    color: #3498db;
+}
+
+.nav-link i {
+    margin-right: 6px;
+}
+
+
+/* 유저 상세 정보 토글 및 dropdown */
+.user-menu {
+    position: relative;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.user-info:hover {
+    display: block;
+    background-color: #f0f7ff;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    min-width: 180px;
+    display: none;
+    z-index: 10;
+}
+
+.user-info:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 12px 15px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f5f5f5;
+}
