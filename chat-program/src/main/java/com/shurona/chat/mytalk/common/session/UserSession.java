@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.user.presentation.session;
+package com.shurona.chat.mytalk.common.session;
 
 public record UserSession(Long userId, String loginId) {
 

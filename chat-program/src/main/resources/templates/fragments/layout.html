@@ -20,21 +20,25 @@
     </div>
 
     <div class="nav-links">
-      <a th:href="@{/friends}" class="nav-link" th:classappend="${currentPage == 'friends' ? 'active' : ''}">
+      <a th:href="@{/friends/v1}" class="nav-link" th:classappend="${currentPage == 'friends' ? 'active' : ''}">
         <i class="fas fa-user-friends"></i> 친구 목록
       </a>
-      <a th:href="@{/chatrooms}" class="nav-link" th:classappend="${currentPage == 'chatrooms' ? 'active' : ''}">
+      <a th:href="@{/chatrooms/v1}" class="nav-link" th:classappend="${currentPage == 'chatrooms' ? 'active' : ''}">
         <i class="fas fa-comments"></i> 채팅방
       </a>
     </div>
 
     <div class="user-menu">
-      <div class="user-info" th:if="${session.loginUser != null}">
-        <span th:text="${session.loginUser.loginId}">사용자</span>
+      <div class="user-info" th:if="${userInfo != null}">
+        <span th:text="${userInfo.loginId}">사용자</span>
         <div class="dropdown-menu">
           <a th:href="@{/profile}">내 프로필</a>
           <a th:href="@{/settings}">설정</a>
-          <a th:href="@{/logout}">로그아웃</a>
+          <!-- 로그아웃 post 처리 -->
+          <hr> <!-- 구분선 추가 -->
+          <form th:action="@{/logout}" method="post" style="margin:0; padding:0;">
+            <button type="submit" class="logout-btn">로그아웃</button>
+          </form>
         </div>
       </div>
     </div>

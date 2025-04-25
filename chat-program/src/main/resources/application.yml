@@ -14,9 +14,9 @@ spring:
       ddl-auto: update
 #    properties:
 #      hibernate:
-#        show_sql: true # sql ??
-#        format_sql: true # SQL ? ???? ??
-#        highlight_sql: true # SQL ? ? ??
+#        show_sql: true # sql
+#        format_sql: true # SQL
+#        highlight_sql: true # SQL
 
 # ??
 server:
