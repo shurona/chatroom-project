@@ -1,13 +1,15 @@
 package com.shurona.chat.mytalk.friend.common.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class FriendException extends RuntimeException{
-    private final HttpStatus httpStatus;
+    private final FriendErrorCode code;
 
-    public FriendException(HttpStatus status, String message) {
-        super(message);
-        httpStatus = status;
+    public FriendException(FriendErrorCode code) {
+        super(code.getMessage());
+        this.code = code;
     }
 
 }

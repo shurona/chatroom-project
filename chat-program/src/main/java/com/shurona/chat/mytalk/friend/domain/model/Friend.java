@@ -4,8 +4,8 @@ import static com.shurona.chat.mytalk.friend.common.exception.FriendErrorCode.IN
 
 import com.shurona.chat.mytalk.common.entity.BaseEntity;
 import com.shurona.chat.mytalk.friend.common.exception.FriendException;
-import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
+import com.shurona.chat.mytalk.user.domain.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -39,7 +39,7 @@ public class Friend extends BaseEntity {
     @JoinColumn
     private User friend;
 
-//    @Convert(converter = FriendRequestConverter.class)
+    //    @Convert(converter = FriendRequestConverter.class)
     @Enumerated(EnumType.STRING)
     @Column(name = "request_status")
     private FriendRequest request;
@@ -77,26 +77,22 @@ public class Friend extends BaseEntity {
 
     public void acceptFriendRequest() {
         if (this.request != FriendRequest.REQUESTED) {
-            throw new FriendException(
-                INVALID_INPUT.getStatus(),
-                INVALID_INPUT.getMessage());
+            throw new FriendException(INVALID_INPUT);
         }
         this.request = FriendRequest.ACCEPTED;
     }
+
     public void refuseFriendRequest() {
         if (this.request != FriendRequest.REQUESTED) {
-            throw new FriendException(
-                INVALID_INPUT.getStatus(),
-                INVALID_INPUT.getMessage());
+            throw new FriendException(INVALID_INPUT);
         }
         this.request = FriendRequest.REFUSED;
     }
+
     public void bannedFriendRequest() {
         // 이미 밴 되어 있는 상태면 불필요한 입력은 막는다.
         if (this.request == FriendRequest.BANNED) {
-            throw new FriendException(
-                INVALID_INPUT.getStatus(),
-                INVALID_INPUT.getMessage());
+            throw new FriendException(INVALID_INPUT);
         }
         this.request = FriendRequest.BANNED;
     }

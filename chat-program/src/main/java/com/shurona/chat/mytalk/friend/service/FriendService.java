@@ -30,7 +30,7 @@ public interface FriendService {
     public List<Friend> findRequestedFriendListByUser(User user);
 
     /*
-        친구 요청 수락
+        두 명이 친구인지 확인하는 함수
      */
     public Friend findFriendByUserAndFriend(User user, User friend);
 
