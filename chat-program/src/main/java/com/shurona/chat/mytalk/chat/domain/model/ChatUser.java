@@ -16,7 +16,6 @@ import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Entity(name = "chat_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,6 +30,9 @@ public class ChatUser extends BaseEntity {
     @Column
     private RoomRole role;
 
+    @Column(name = "last_read_message_id")
+    private Long lastReadMessageId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -38,4 +40,21 @@ public class ChatUser extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private ChatRoom room;
+
+    /*
+        static method pattern
+     */
+    public static ChatUser createChatUser(User user, ChatRoom room, RoomRole role) {
+        ChatUser chatUser = new ChatUser();
+        chatUser.user = user;
+        chatUser.role = role;
+        chatUser.room = room;
+        chatUser.lastReadMessageId = 0L;
+        return chatUser;
+    }
+
+
+    public void updateRecentRead(Long logId) {
+        this.lastReadMessageId = logId;
+    }
 }

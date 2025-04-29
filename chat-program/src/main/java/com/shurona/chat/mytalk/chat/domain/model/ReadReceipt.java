@@ -8,12 +8,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "read_receipt")
+@Entity
+@Table(
+    name = "read_receipt",
+    uniqueConstraints = @UniqueConstraint(
+        columnNames = {"user_id", "log_id"}
+    )
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ReadReceipt {
@@ -29,5 +36,13 @@ public class ReadReceipt {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "log_id")
     private ChatLog log;
+
+    public static ReadReceipt createReadReceipt(User user, ChatLog log) {
+        ReadReceipt readReceipt = new ReadReceipt();
+        readReceipt.user = user;
+        readReceipt.log = log;
+
+        return readReceipt;
+    }
 
 }
