@@ -45,7 +45,7 @@ class FriendServiceImplTest {
         User userB = userService.findUserById(userId2);
 
         // when
-        List<Friend> friendListBeforeSave = friendService.findAcceptedFriendListByUser(userB);
+        List<Friend> friendListBeforeSave = friendService.findAcceptedFriendListByUser(userA);
         Friend friend = friendService.saveFriend(userA, userB);
 
         // 이때에는 request 이어야 한다.
@@ -54,12 +54,12 @@ class FriendServiceImplTest {
         // 친구 수락
         friendService.changeStatusById(friend.getId(), FriendRequest.ACCEPTED);
         // 친구 목록 불러온다.
-        List<Friend> friendListAfterSave = friendService.findAcceptedFriendListByUser(userB);
+        List<Friend> friendListAfterSave = friendService.findAcceptedFriendListByUser(userA);
 
         //then
         assertThat(friendListBeforeSave.size()).isEqualTo(0);
         assertThat(friendListAfterSave.size()).isEqualTo(1);
-        assertThat(friend.getFriend().getId()).isEqualTo(userA.getId());
+        assertThat(friend.getFriend().getId()).isEqualTo(userB.getId());
         assertThat(friend.getRequest()).isEqualTo(FriendRequest.ACCEPTED);
     }
 

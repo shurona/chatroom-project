@@ -33,22 +33,21 @@ public class FriendServiceImpl implements FriendService, FriendChecker {
             throw new FriendException(INVALID_INPUT);
         }
 
-        Optional<Friend> dbFriend = friendRepository.findByUserAndFriend(friend, user);
-
-        // 이미 존재 하는 경우에는 접근 제한
+        // 이미 친구 상태인지 확인하고 존재하면 에러 처리
+        Optional<Friend> dbFriend = friendRepository.findByUserAndFriend(user, friend);
         if (dbFriend.isPresent()) {
             throw new FriendException(FRIEND_ALREADY_EXIST);
         }
 
         // 반대로 이미 존재하는지 확인한다.
-        Optional<Friend> checkMutualFriendship = friendRepository.findByUserAndFriend(user, friend);
+        Optional<Friend> checkMutualFriendship = friendRepository.findByUserAndFriend(friend, user);
 
         // 상대방이 친구 수락을 했으면 자동으로 수락을 한다.
         Friend newFriend;
         if (checkMutualFriendship.isPresent()) {
-            newFriend = Friend.acceptMutualFriend(friend, user);
+            newFriend = Friend.acceptMutualFriend(user, friend);
         } else {
-            newFriend = Friend.newFriend(friend, user);
+            newFriend = Friend.newFriend(user, friend);
         }
 
         return friendRepository.save(newFriend);
@@ -68,13 +67,13 @@ public class FriendServiceImpl implements FriendService, FriendChecker {
 
     @Override
     public List<Friend> findRequestedFriendListByUser(User user) {
-        return friendRepository.findUserListByUserAndRequest(user, FriendRequest.REQUESTED);
+        return friendRepository.findUserListByFriendAndRequest(user, FriendRequest.REQUESTED);
     }
 
 
     @Override
     public Optional<Friend> findFriendByUserAndFriend(User user, User friend) {
-        return friendRepository.findByUserAndFriend(friend, user);
+        return friendRepository.findByUserAndFriend(user, friend);
     }
 
     @Transactional

@@ -127,6 +127,9 @@ public class FriendController {
         Friend friendById = friendService.findFriendById(requestId);
         friendService.changeStatusById(friendById.getId(), FriendRequest.ACCEPTED);
 
+        // 수락을 했으니 다음 것도 진행
+        friendService.saveFriend(friendById.getFriend(), friendById.getUser());
+
         return "redirect:/friends/v1/requests";
     }
 
