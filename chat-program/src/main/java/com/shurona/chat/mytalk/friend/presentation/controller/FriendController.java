@@ -3,14 +3,13 @@ package com.shurona.chat.mytalk.friend.presentation.controller;
 import static com.shurona.chat.mytalk.common.variable.StaticVariable.LOGIN_USER;
 
 import com.shurona.chat.mytalk.common.session.UserSession;
+import com.shurona.chat.mytalk.friend.application.FriendService;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
+import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
 import com.shurona.chat.mytalk.friend.presentation.dto.AddFriendForm;
 import com.shurona.chat.mytalk.friend.presentation.dto.FriendRequestDto;
-import com.shurona.chat.mytalk.friend.service.FriendService;
-import com.shurona.chat.mytalk.user.application.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest.RequestStatus;
+import com.shurona.chat.mytalk.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,13 +34,12 @@ public class FriendController {
     @GetMapping
     public String FriendListPage(HttpSession session, Model model,
         @ModelAttribute("addFriendForm") AddFriendForm form
-        ) {
+    ) {
 
         // 세션에서 사용자 정보 가져오기
         UserSession currentUser = (UserSession) session.getAttribute(LOGIN_USER);
 
         User user = userService.findUserById(currentUser.userId());
-
 
         // 친구 목록 조회
         List<FriendRequestDto> friendList = FriendRequestDto.from(
@@ -111,7 +109,6 @@ public class FriendController {
             return "friend/home";
         }
 
-
         friendService.saveFriend(user, friend);
 
         return "redirect:/friends/v1";
@@ -129,6 +126,9 @@ public class FriendController {
 
         Friend friendById = friendService.findFriendById(requestId);
         friendService.changeStatusById(friendById.getId(), FriendRequest.ACCEPTED);
+
+        // 수락을 했으니 다음 것도 진행
+        friendService.saveFriend(friendById.getFriend(), friendById.getUser());
 
         return "redirect:/friends/v1/requests";
     }

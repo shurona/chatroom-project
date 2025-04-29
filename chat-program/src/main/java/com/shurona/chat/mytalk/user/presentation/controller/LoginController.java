@@ -1,7 +1,6 @@
 package com.shurona.chat.mytalk.user.presentation.controller;
 
-import com.shurona.chat.mytalk.friend.service.FriendService;
-import com.shurona.chat.mytalk.user.application.UserService;
+import com.shurona.chat.mytalk.user.service.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.user.presentation.dto.LoginForm;
 import com.shurona.chat.mytalk.common.session.UserSession;

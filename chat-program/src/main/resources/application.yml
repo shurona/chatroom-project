@@ -12,11 +12,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-#    properties:
-#      hibernate:
-#        show_sql: true # sql
-#        format_sql: true # SQL
-#        highlight_sql: true # SQL
+      default_batch_fetch_size: 10
+    properties:
+      hibernate:
+        show_sql: true # sql
+        format_sql: true # SQL
+        highlight_sql: true # SQL
 
 # ??
 server:

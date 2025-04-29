@@ -1,9 +1,8 @@
-package com.shurona.chat.mytalk.friend.service;
+package com.shurona.chat.mytalk.friend.application;
 
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
+import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
 import com.shurona.chat.mytalk.user.domain.model.User;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest.RequestStatus;
 import java.util.List;
 
 public interface FriendService {
@@ -30,10 +29,6 @@ public interface FriendService {
      */
     public List<Friend> findRequestedFriendListByUser(User user);
 
-    /*
-        친구 요청 수락
-     */
-    public Friend findFriendByUserAndFriend(User user, User friend);
 
     /*
         친구 상태 변경

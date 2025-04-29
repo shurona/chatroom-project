@@ -1,11 +1,11 @@
-package com.shurona.chat.mytalk.friend.service;
+package com.shurona.chat.mytalk.friend.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
-import com.shurona.chat.mytalk.user.application.UserService;
+import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
 import com.shurona.chat.mytalk.user.domain.model.User;
-import com.shurona.chat.mytalk.user.domain.type.FriendRequest;
+import com.shurona.chat.mytalk.user.service.UserService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,14 +41,11 @@ class FriendServiceImplTest {
         String description2 = "description2";
         String phoneNumber2 = "010-202-2022";
 
-
         Long userId2 = userService.saveUser(username2, password2, description2, phoneNumber2);
         User userB = userService.findUserById(userId2);
 
-
-
         // when
-        List<Friend> friendListBeforeSave = friendService.findAcceptedFriendListByUser(userB);
+        List<Friend> friendListBeforeSave = friendService.findAcceptedFriendListByUser(userA);
         Friend friend = friendService.saveFriend(userA, userB);
 
         // 이때에는 request 이어야 한다.
@@ -57,12 +54,12 @@ class FriendServiceImplTest {
         // 친구 수락
         friendService.changeStatusById(friend.getId(), FriendRequest.ACCEPTED);
         // 친구 목록 불러온다.
-        List<Friend> friendListAfterSave = friendService.findAcceptedFriendListByUser(userB);
+        List<Friend> friendListAfterSave = friendService.findAcceptedFriendListByUser(userA);
 
         //then
         assertThat(friendListBeforeSave.size()).isEqualTo(0);
         assertThat(friendListAfterSave.size()).isEqualTo(1);
-        assertThat(friend.getFriend().getId()).isEqualTo(userA.getId());
+        assertThat(friend.getFriend().getId()).isEqualTo(userB.getId());
         assertThat(friend.getRequest()).isEqualTo(FriendRequest.ACCEPTED);
     }
 

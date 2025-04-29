@@ -1,5 +1,6 @@
 package com.shurona.chat.mytalk.user.domain.model;
 
+import com.shurona.chat.mytalk.chat.domain.model.ChatUser;
 import com.shurona.chat.mytalk.common.entity.BaseEntity;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
 import com.shurona.chat.mytalk.user.domain.vo.UserPhoneNumber;
@@ -45,6 +46,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     List<Friend> friendList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    List<ChatUser> chatUserList = new ArrayList<>();
 
     public static User createUser(String loginId, String description, String phoneNumber) {
         User user = new User();
