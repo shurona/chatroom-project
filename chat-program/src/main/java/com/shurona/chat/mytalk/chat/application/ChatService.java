@@ -11,6 +11,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface ChatService {
 
+    /*
+        채팅방 생성
+     */
     public ChatRoom createChatRoom(User user, List<User> invitedUserList, RoomType type,
         String names);
 

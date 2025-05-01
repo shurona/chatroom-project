@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -37,6 +38,12 @@ public class ChatRoom extends BaseEntity {
     @Column(name = "room_type")
     private RoomType type;
 
+    @Column(name = "last_message")
+    private String lastMessage;
+
+    @Column(name = "last_time")
+    private LocalDateTime lastTime;
+
     @BatchSize(size = 30)
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<ChatUser> chatUserList = new ArrayList<>();
@@ -52,6 +59,8 @@ public class ChatRoom extends BaseEntity {
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.name = name;
         chatRoom.type = type;
+        chatRoom.lastMessage = "";
+        chatRoom.lastTime = LocalDateTime.now();
 
         chatRoom.getChatUserList()
             .add(ChatUser.createChatUser(user, chatRoom, RoomRole.ADMIN));
