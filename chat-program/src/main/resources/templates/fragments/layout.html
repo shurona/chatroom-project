@@ -2,15 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head(title)">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title th:text="${title}">채팅 서비스</title>
   <link rel="stylesheet" th:href="@{/css/main.css}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        rel="stylesheet">
 </head>
 
 <body>
 <!-- 네비게이션 바 -->
-<nav th:fragment="nav" class="main-nav">
+<nav class="main-nav" th:fragment="nav">
   <div class="nav-container">
     <div class="logo">
       <a th:href="@{/}">
@@ -20,10 +21,12 @@
     </div>
 
     <div class="nav-links">
-      <a th:href="@{/friends/v1}" class="nav-link" th:classappend="${currentPage == 'friends' ? 'active' : ''}">
+      <a class="nav-link" th:classappend="${currentPage == 'friends' ? 'active' : ''}"
+         th:href="@{/friends/v1}">
         <i class="fas fa-user-friends"></i> 친구 목록
       </a>
-      <a th:href="@{/chatrooms/v1}" class="nav-link" th:classappend="${currentPage == 'chatrooms' ? 'active' : ''}">
+      <a class="nav-link" th:classappend="${currentPage == 'chatrooms' ? 'active' : ''}"
+         th:href="@{/chats/v1/rooms}">
         <i class="fas fa-comments"></i> 채팅방
       </a>
     </div>
@@ -36,8 +39,8 @@
           <a th:href="@{/settings}">설정</a>
           <!-- 로그아웃 post 처리 -->
           <hr> <!-- 구분선 추가 -->
-          <form th:action="@{/logout}" method="post" style="margin:0; padding:0;">
-            <button type="submit" class="logout-btn">로그아웃</button>
+          <form method="post" style="margin:0; padding:0;" th:action="@{/logout}">
+            <button class="logout-btn" type="submit">로그아웃</button>
           </form>
         </div>
       </div>
