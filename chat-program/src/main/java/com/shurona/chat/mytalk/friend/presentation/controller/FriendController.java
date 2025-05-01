@@ -104,6 +104,7 @@ public class FriendController {
             List<FriendRequestResponseDto> friendList = FriendRequestResponseDto.from(
                 friendService.findAcceptedFriendListByUser(user)
             );
+            model.addAttribute("userInfo", user);
             model.addAttribute("friends", friendList);
             model.addAttribute("showAddFriendModal", true);
             return "friend/home";
