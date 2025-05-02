@@ -115,6 +115,11 @@ public class ChatServiceImpl implements ChatService {
             throw new ChatException(BAD_REQUEST);
         }
 
+        // 현재 채팅방에 내용이 없으면 패스
+        if (logs.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         // 최근 읽은 기록 업데이트
         chatUser.get().updateRecentRead(logs.getFirst().getId());
 
