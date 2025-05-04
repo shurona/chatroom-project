@@ -6,6 +6,7 @@ import com.shurona.chat.mytalk.chat.application.ChatService;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
 import com.shurona.chat.mytalk.chat.domain.type.RoomType;
 import com.shurona.chat.mytalk.chat.presentation.dtos.ChatLogResponseDto;
+import com.shurona.chat.mytalk.chat.presentation.dtos.ChatMessageData;
 import com.shurona.chat.mytalk.chat.presentation.dtos.ChatMessageHeaderResponseDto;
 import com.shurona.chat.mytalk.chat.presentation.dtos.ChatMessageResponseDto;
 import com.shurona.chat.mytalk.chat.presentation.dtos.ChatRoomResponseDto;
@@ -24,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -93,9 +95,11 @@ public class ChatController {
 
     @PostMapping("/rooms/{id}/message")
     public ResponseEntity<Void> writeMessage(
-        @PathVariable("id") Long roomId
+        @PathVariable("id") Long roomId,
+        @RequestBody ChatMessageData data
     ) {
-        System.out.println("아이디 : " + roomId);
+
+        System.out.println("아이디 : " + roomId + " : " + data);
         return ResponseEntity.ok().build();
     }
 

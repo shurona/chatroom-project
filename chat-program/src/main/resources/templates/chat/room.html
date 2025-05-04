@@ -25,28 +25,42 @@
     </div>
   </div>
   <!-- 메시지 입력창 -->
-  <form class="chat-input-area" method="post"
-        th:action="@{/chats/v1/rooms/{roomId}/message(roomId=${header.id})}">
-    <input autocomplete="off" name="message" placeholder="메시지를 입력하세요..." required type="text">
+  <form class="chat-input-area" id="chatForm" onsubmit="submitMessage(event)">
+    <input autocomplete="off" id="message" name="message" placeholder="메시지를 입력하세요..." required
+           type="text">
     <button class="btn btn-chat-enter" id="btnChatEnter" type="submit">전송</button>
   </form>
 </div>
 <script>
-  const btnCreate = document.getElementById('btnChatEnter');
+  const submitMessage = async (event) => {
+    event.preventDefault(); // 기본 폼 제출 막기
 
-  function sendMessage(event) {
-      e.preventDefault(); // 기본 form submit 방지
+    const roomId = [[${header.id}]];
 
-      // 서버에만 전송 (UI 갱신 X)
-      fetch(this.action, {
-          method: 'POST',
-          body: new URLSearchParams(new FormData(this)),
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-      }).then(() => {
-          messageInput.value = ''; // 입력창 초기화
-      });
-  });
+    console.log("?? : " + roomId);
 
+    const message = document.getElementById('message').value;
+    const url = `/chats/v1/rooms/${roomId}/message`
+
+
+    fetch(url, {
+        method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message })
+    })
+    .then(response => {
+        if (response.ok) {
+            document.getElementById('message').value = ''; // 입력창 비우기
+        } else {
+            alert('메시지 전송에 실패했습니다.');
+        }
+    })
+    .catch(error => {
+        alert('오류 발생: ' + error);
+    });
+  }
 </script>
 
 </body>
