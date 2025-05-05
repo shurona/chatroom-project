@@ -6,6 +6,8 @@
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500,700&display=swap"
         rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/main.css}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
 </head>
 <body>
 <div class="chat-room-container">
@@ -32,12 +34,50 @@
   </form>
 </div>
 <script>
+  let stompClient;
+  // 접속했을 때 소켓 연결을 해봅시다
+  function connect() {
+    const url = `ws://localhost:19100/socket/chat`;
+    const jwtToken = "token none";
+
+    stompClient = new StompJs.Client({
+        brokerURL: url,
+        reconnectDelay: 5000,  // 자동 재연결 (5초)
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+        connectHeaders: {
+            //JWT 토큰 추가
+            Authorization: jwtToken
+
+        },
+        onConnect: stompConnectHandler,
+        onStompError: stompErrorHandler
+    });
+
+    stompClient.activate(); // 연결 활성화
+  }
+
+  function stompConnectHandler() {
+    console.log('Connected!');
+    const roomId = [[${header.id}]];
+    const roomUrl = `/topic/room/${roomId}`;
+    stompClient.subscribe(roomUrl, function(message) {
+      const chat = JSON.parse(message.body);
+      console.log(chat);
+      // showMessage(chat);  // 메시지 표시 함수
+    });
+  }
+
+  // 실패시 에러 로그
+  function stompErrorHandler(e) {
+    console.error('STOMP 연결 오류: ', e);
+  }
+
+  // 채팅 전달 시 메시지 전달
   const submitMessage = async (event) => {
     event.preventDefault(); // 기본 폼 제출 막기
 
     const roomId = [[${header.id}]];
-
-    console.log("?? : " + roomId);
 
     const message = document.getElementById('message').value;
     const url = `/chats/v1/rooms/${roomId}/message`
@@ -61,6 +101,10 @@
         alert('오류 발생: ' + error);
     });
   }
+
+  window.onload = function() {
+    connect();
+};
 </script>
 
 </body>
