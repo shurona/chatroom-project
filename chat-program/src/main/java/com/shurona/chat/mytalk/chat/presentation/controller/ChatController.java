@@ -20,6 +20,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,9 +35,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ChatController {
 
+    // Service
     private final ChatService chatService;
     private final UserService userService;
     private final FriendService friendService;
+
+    // chat 전달 용
+    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/rooms")
     public String chatListPage(
@@ -100,6 +105,13 @@ public class ChatController {
     ) {
 
         System.out.println("아이디 : " + roomId + " : " + data);
+
+        String destination = "/topic/room/" + roomId;
+
+        System.out.println(destination);
+
+        messagingTemplate.convertAndSend(destination, data);
+
         return ResponseEntity.ok().build();
     }
 
