@@ -1,62 +1,65 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.4.4'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.4.4'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.shurona.chat'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	// web
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+    // web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	// thymeleaf
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
-	// validation
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// jpa
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	// crypto 라이브러리만 추가
-	implementation group: 'org.springframework.security',
-			name: 'spring-security-crypto',
-			version: '6.4.4'
+    // socket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-	// MYSQL
-	runtimeOnly 'com.mysql:mysql-connector-j'
+    // crypto 라이브러리만 추가
+    implementation group: 'org.springframework.security',
+            name: 'spring-security-crypto',
+            version: '6.4.4'
 
-	// lombok
-	annotationProcessor 'org.projectlombok:lombok'
-	compileOnly 'org.projectlombok:lombok'
+    // MYSQL
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
-	// test
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // lombok
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
 
-	// testDB
-	testRuntimeOnly 'com.h2database:h2'
+    // test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // testDB
+    testRuntimeOnly 'com.h2database:h2'
 
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
