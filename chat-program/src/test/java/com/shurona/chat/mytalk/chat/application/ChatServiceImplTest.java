@@ -94,6 +94,23 @@ class ChatServiceImplTest {
     }
 
     @Test
+    void 친구_수락_후_채팅방_반복_생성_확인() {
+        // given
+        friend.acceptFriendRequest();
+
+        // when
+        chatService.createChatRoom(userA, List.of(userB), RoomType.PRIVATE,
+            "secretRoom");
+        chatService.createChatRoom(userA, List.of(userB), RoomType.PRIVATE,
+            "secretRoom");
+        ChatRoom chatRoom = chatService.createChatRoom(userA, List.of(userB), RoomType.PRIVATE,
+            "secretRoom");
+
+        // then
+        assertThat(chatRoom.getName()).isEqualTo("secretRoom");
+    }
+
+    @Test
     void 채팅방_목록_조회_정상동작() {
         // given
         friend.acceptFriendRequest();
@@ -124,14 +141,21 @@ class ChatServiceImplTest {
         List<ChatLogResponseDto> chatLogs = chatService
             .readChatLog(userA, room, PageRequest.of(0, 20));
 
+        // 채팅방의 최근 채팅을 확인
+        room = chatService.findChatRoomById(room.getId());
+        assertThat(room.getLastMessage()).isEqualTo(firstChatData);
+
+        // 처음에 채팅을 저장했을 때 확인
         assertThat(chatLogs.size()).isEqualTo(2);
         assertThat(chatLogs.getFirst().content()).isEqualTo(firstChatData);
         assertThat(chatLogs.getFirst().unreadCount()).isEqualTo(1);
 
+        // 같은 유저가 반복해서 채팅 읽었을 때 숫장 유지 확인
         List<ChatLogResponseDto> chatLogsOneMore = chatService
             .readChatLog(userA, room, PageRequest.of(0, 20));
         assertThat(chatLogsOneMore.getFirst().unreadCount()).isEqualTo(1);
 
+        // 채팅 읽었을 때 안읽은 유저 숫자 확인
         List<ChatLogResponseDto> chatLogsTwo = chatService
             .readChatLog(userB, room, PageRequest.of(0, 20));
         assertThat(chatLogsTwo.getFirst().unreadCount()).isEqualTo(0);

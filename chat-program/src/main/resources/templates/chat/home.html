@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="../fragments/layout :: head('채팅방 목록')">
+<head th:replace="fragments/layout :: head('채팅방 목록')">
 </head>
 <body>
-<div th:replace="../fragments/layout :: nav"></div>
+<div th:replace="fragments/layout :: nav"></div>
 
 <div class="container main-container">
   <div class="page-header">
@@ -14,21 +14,21 @@
   </div>
 
   <div class="search-bar">
-    <input type="text" id="roomSearch" placeholder="채팅방 검색...">
+    <input id="roomSearch" placeholder="채팅방 검색..." type="text">
     <i class="fas fa-search search-icon"></i>
   </div>
 
   <div class="chat-rooms">
     <!-- 채팅방이 없는 경우 -->
-    <div th:if="${#lists.isEmpty(chatRooms)}" class="empty-list">
+    <div class="empty-list" th:if="${#lists.isEmpty(chatRooms)}">
       <i class="fas fa-comments empty-icon"></i>
       <p>참여 중인 채팅방이 없습니다</p>
       <p class="sub-text">새로운 채팅방을 만들거나 친구와 대화를 시작해보세요!</p>
     </div>
 
     <!-- 채팅방 목록 -->
-    <div th:unless="${#lists.isEmpty(chatRooms)}" class="room-items">
-      <div th:each="room : ${chatRooms}" class="room-item">
+    <div class="room-items" th:unless="${#lists.isEmpty(chatRooms)}">
+      <div class="room-item" th:each="room : ${chatRooms}">
         <div class="room-avatar">
           <div class="avatar">
             <span th:text="${room.name.substring(0,1).toUpperCase()}">R</span>
@@ -44,30 +44,30 @@
                             00/00 00:00
                         </span>
         </div>
-        <a th:href="@{/chat/room/{id}(id=${room.id})}" class="room-link"></a>
+        <a class="room-link" th:href="@{/chats/v1/rooms/{id}(id=${room.id})}"></a>
       </div>
     </div>
   </div>
 </div>
 
 <!-- 채팅방 생성 모달 -->
-<div id="createRoomModal" class="modal">
+<div class="modal" id="createRoomModal">
   <div class="modal-content">
     <div class="modal-header">
       <h2>새 채팅방 만들기</h2>
       <span class="close">&times;</span>
     </div>
     <div class="modal-body">
-      <form th:action="@{/chatrooms/create}" method="post">
+      <form method="post" th:action="@{/chatrooms/create}">
         <div class="form-group">
           <label for="roomName">채팅방 이름</label>
-          <input type="text" id="roomName" name="roomName" placeholder="채팅방 이름을 입력하세요" required>
+          <input id="roomName" name="roomName" placeholder="채팅방 이름을 입력하세요" required type="text">
         </div>
         <div class="form-group">
           <label for="description">설명</label>
           <textarea id="description" name="description" placeholder="채팅방에 대한 설명을 입력하세요"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">채팅방 만들기</button>
+        <button class="btn btn-primary" type="submit">채팅방 만들기</button>
       </form>
     </div>
   </div>

@@ -3,6 +3,7 @@ package com.shurona.chat.mytalk.chat.application;
 import static com.shurona.chat.mytalk.chat.common.ChatErrorCode.BAD_REQUEST;
 import static java.util.stream.Collectors.toMap;
 
+import com.shurona.chat.mytalk.chat.application.cache.ChatCacheInfo;
 import com.shurona.chat.mytalk.chat.common.ChatException;
 import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
@@ -15,6 +16,7 @@ import com.shurona.chat.mytalk.chat.infrastructure.ChatRoomJpaRepository;
 import com.shurona.chat.mytalk.chat.infrastructure.ChatUserJpaRepository;
 import com.shurona.chat.mytalk.chat.presentation.dtos.ChatLogResponseDto;
 import com.shurona.chat.mytalk.user.domain.model.User;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +35,8 @@ public class ChatServiceImpl implements ChatService {
     private final ChatLogJpaRepository chatLogRepository;
     private final ChatUserJpaRepository chatUserRepository;
 
+    private final ChatCacheInfo chatCacheInfo;
+
     // domain service
     private final ChatRoomValidator chatRoomValidator;
 
@@ -44,6 +48,17 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ChatRoom createChatRoom(User user, List<User> invitedUserList, RoomType type,
         String name) {
+
+        List<User> withUsers = new ArrayList<>(invitedUserList);
+        withUsers.add(user);
+
+//        // 이미 존재하는지 확인한다.
+        List<ChatRoom> privateRoomsWithUsers = chatRoomRepository.findPrivateRoomContainingExactUsers(
+            withUsers, type, withUsers.size());
+        if (type.equals(RoomType.PRIVATE) && !privateRoomsWithUsers.isEmpty()) {
+//            System.out.println(privateRoomsWithUsers.size());
+            return privateRoomsWithUsers.getFirst();
+        }
 
         // 개인룸 검증 툴
         chatRoomValidator.createPrivateChatRoomValidator(user, invitedUserList, type);
@@ -74,7 +89,19 @@ public class ChatServiceImpl implements ChatService {
         chatRoomValidator.writeChatValidator(room, user);
 
         // 저장
-        return chatLogRepository.save(ChatLog.createLog(room, user, chatData, type));
+        ChatLog chatLog = chatLogRepository.save(ChatLog.createLog(room, user, chatData, type));
+
+        // 메모리에서 최근 시간을 업데이트 해준다.
+        // TODO: Redis로 변경
+        boolean isUpdate = chatCacheInfo.checkLastMessageUpdate(room, chatLog);
+
+        if (isUpdate) {
+            // 최근 메시지 업데이트
+            chatRoomRepository.updateLastMessageAndTime(
+                room.getId(), chatLog.getContent(), chatLog.getCreatedAt());
+        }
+
+        return chatLog;
     }
 
     @Transactional
@@ -86,6 +113,11 @@ public class ChatServiceImpl implements ChatService {
         Optional<ChatUser> chatUser = chatUserRepository.findByUserAndRoom(user, room);
         if (chatUser.isEmpty()) {
             throw new ChatException(BAD_REQUEST);
+        }
+
+        // 현재 채팅방에 내용이 없으면 패스
+        if (logs.isEmpty()) {
+            return new ArrayList<>();
         }
 
         // 최근 읽은 기록 업데이트

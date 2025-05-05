@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>채팅방</title>
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500,700&display=swap"
+        rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+</head>
+<body>
+<div class="chat-room-container">
+  <!-- 채팅방 헤더 -->
+  <div class="chat-header">
+    <div class="avatar" th:text="${header.partner.substring(0,1).toUpperCase()}">A</div>
+    <h2 style="margin-left: 10px;" th:text="${header.name}">채팅방 이름</h2>
+  </div>
+  <!-- 메시지 목록 -->
+  <div class="chat-messages" id="chat-messages">
+    <div class="message" th:classappend="${msg.mine} ? 'me'" th:each="msg : ${messages}">
+      <div class="avatar" th:text="${msg.loginId}">U</div>
+      <div>
+        <div class="message-content" th:text="${msg.content}">안녕하세요! 반가워요.</div>
+        <div class="message-meta" th:text="${#temporals.format(msg.wroteTime, 'HH:mm')}">12:34</div>
+      </div>
+    </div>
+  </div>
+  <!-- 메시지 입력창 -->
+  <form class="chat-input-area" id="chatForm" onsubmit="submitMessage(event)">
+    <input autocomplete="off" id="message" name="message" placeholder="메시지를 입력하세요..." required
+           type="text">
+    <button class="btn btn-chat-enter" id="btnChatEnter" type="submit">전송</button>
+  </form>
+</div>
+<script>
+  let stompClient;
+  // 접속했을 때 소켓 연결을 해봅시다
+  function connect() {
+    const url = `ws://localhost:19100/socket/chat`;
+    const jwtToken = "token none";
+
+    stompClient = new StompJs.Client({
+        brokerURL: url,
+        reconnectDelay: 5000,  // 자동 재연결 (5초)
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+        connectHeaders: {
+            //JWT 토큰 추가
+            Authorization: jwtToken
+
+        },
+        onConnect: stompConnectHandler,
+        onStompError: stompErrorHandler
+    });
+
+    stompClient.activate(); // 연결 활성화
+  }
+
+  function stompConnectHandler() {
+    console.log('Connected!');
+    const roomId = [[${header.id}]];
+    const roomUrl = `/topic/room/${roomId}`;
+    stompClient.subscribe(roomUrl, function(message) {
+      const chat = JSON.parse(message.body);
+      console.log(chat);
+      // showMessage(chat);  // 메시지 표시 함수
+    });
+  }
+
+  // 실패시 에러 로그
+  function stompErrorHandler(e) {
+    console.error('STOMP 연결 오류: ', e);
+  }
+
+  // 채팅 전달 시 메시지 전달
+  const submitMessage = async (event) => {
+    event.preventDefault(); // 기본 폼 제출 막기
+
+    const roomId = [[${header.id}]];
+
+    const message = document.getElementById('message').value;
+    const url = `/chats/v1/rooms/${roomId}/message`
+
+
+    fetch(url, {
+        method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message })
+    })
+    .then(response => {
+        if (response.ok) {
+            document.getElementById('message').value = ''; // 입력창 비우기
+        } else {
+            alert('메시지 전송에 실패했습니다.');
+        }
+    })
+    .catch(error => {
+        alert('오류 발생: ' + error);
+    });
+  }
+
+  window.onload = function() {
+    connect();
+};
+</script>
+
+</body>
+</html>
