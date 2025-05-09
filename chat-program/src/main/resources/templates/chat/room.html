@@ -35,6 +35,7 @@
 </div>
 <script>
   let stompClient;
+
   // 접속했을 때 소켓 연결을 해봅시다
   function connect() {
     const url = `ws://localhost:19100/socket/chat`;
@@ -63,8 +64,7 @@
     const roomUrl = `/topic/room/${roomId}`;
     stompClient.subscribe(roomUrl, function(message) {
       const chat = JSON.parse(message.body);
-      console.log(chat);
-      // showMessage(chat);  // 메시지 표시 함수
+      showMessage(chat);  // 메시지 표시 함수
     });
   }
 
@@ -100,6 +100,61 @@
     .catch(error => {
         alert('오류 발생: ' + error);
     });
+  }
+
+  function showMessage(chat) {
+    // username을 갖고 온다.
+    let username = '[[${header.loginId}]]';
+
+    const chatMessages = document.getElementById('chat-messages');
+
+    // 메시지 div 생성
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message');
+    if (username === chat.loginId) {
+        messageDiv.classList.add('me');
+    }
+
+    // 아바타 div 생성
+    const avatarDiv = document.createElement('div');
+    avatarDiv.classList.add('avatar');
+    avatarDiv.textContent = chat.loginId ? chat.loginId : 'U';
+
+    // 메시지 내용 div 생성
+    const contentDiv = document.createElement('div');
+
+    // message-content
+    const messageContentDiv = document.createElement('div');
+    messageContentDiv.classList.add('message-content');
+    messageContentDiv.textContent = chat.content;
+
+    // message-meta
+    const messageMetaDiv = document.createElement('div');
+    messageMetaDiv.classList.add('message-meta');
+
+    // wroteTime이 Date 객체라면 시간만 추출
+    let timeStr = '';
+    if (chat.wroteTime instanceof Date) {
+        timeStr = chat.wroteTime.toTimeString().slice(0,5);
+    } else if (typeof chat.wroteTime === 'string') {
+        // '2024-05-09T14:13:00' 형식이라면
+        timeStr = chat.wroteTime.slice(11,16);
+    } else {
+        timeStr = '00:00';
+    }
+    messageMetaDiv.textContent = timeStr;
+
+    // 조립
+    contentDiv.appendChild(messageContentDiv);
+    contentDiv.appendChild(messageMetaDiv);
+
+    messageDiv.appendChild(avatarDiv);
+    messageDiv.appendChild(contentDiv);
+
+    chatMessages.appendChild(messageDiv);
+
+    // 맨 아래로 스크롤
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
   window.onload = function() {
