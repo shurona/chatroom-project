@@ -15,8 +15,10 @@ public record ChatMessageResponseDto(
 
     public static ChatMessageResponseDto of(
         ChatLogResponseDto responseDto, String loginId, Long userId) {
-        return new ChatMessageResponseDto(responseDto.id(), loginId, responseDto.type(),
-            responseDto.content(), responseDto.unreadCount(), false, responseDto.wroteTime());
+
+        return new ChatMessageResponseDto(responseDto.id(), responseDto.writer().getLoginId(),
+            responseDto.type(), responseDto.content(), responseDto.unreadCount(),
+            responseDto.writer().getId() == userId, responseDto.wroteTime());
     }
 
 }
