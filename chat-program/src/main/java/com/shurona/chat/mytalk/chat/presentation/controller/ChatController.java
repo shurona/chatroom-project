@@ -3,11 +3,13 @@ package com.shurona.chat.mytalk.chat.presentation.controller;
 import static com.shurona.chat.mytalk.common.variable.StaticVariable.LOGIN_USER;
 
 import com.shurona.chat.mytalk.chat.application.ChatService;
+import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
+import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.domain.type.RoomType;
 import com.shurona.chat.mytalk.chat.presentation.dtos.ChatLogResponseDto;
-import com.shurona.chat.mytalk.chat.presentation.dtos.ChatMessageData;
 import com.shurona.chat.mytalk.chat.presentation.dtos.ChatMessageHeaderResponseDto;
+import com.shurona.chat.mytalk.chat.presentation.dtos.ChatMessageRequestData;
 import com.shurona.chat.mytalk.chat.presentation.dtos.ChatMessageResponseDto;
 import com.shurona.chat.mytalk.chat.presentation.dtos.ChatRoomResponseDto;
 import com.shurona.chat.mytalk.common.session.UserSession;
@@ -71,6 +73,13 @@ public class ChatController {
         User userInfo = userService.findUserById(currentUser.userId());
         Friend friend = friendService.findFriendById(requestId);
 
+        // 조회 해서 이미 확인하는지 확인하고 이미 있으면 채팅방으로 redirect
+
+        if (true) {
+            Long chatRoomId = 1L;
+            return "redirect:/chats/v1/rooms/" + chatRoomId;
+        }
+
         chatService.createChatRoom(userInfo, List.of(friend.getFriend()), RoomType.PRIVATE, "개인톡");
 
         return "redirect:/chats/v1/rooms";
@@ -86,31 +95,46 @@ public class ChatController {
         User userInfo = userService.findUserById(currentUser.userId());
         ChatRoom room = chatService.findChatRoomById(roomId);
 
+        // 일단 100 줄만 먼저 읽어온다
         List<ChatLogResponseDto> dtos = chatService.readChatLog(userInfo, room,
             PageRequest.of(0, 100));
 
+        // 메시지 목록
         model.addAttribute("messages",
-            dtos.stream().map(
+            dtos.reversed().stream().map(
                 dto -> ChatMessageResponseDto.of(dto, userInfo.getLoginId(), userInfo.getId())));
+
+        // 채팅창에서 글로벌로 사용할 것
         model.addAttribute("header", new ChatMessageHeaderResponseDto(
-            room.getId(), "partner", room.getName()));
+            room.getId(), userInfo.getLoginId(), "partner", room.getName()));
 
         return "chat/room";
     }
 
     @PostMapping("/rooms/{id}/message")
     public ResponseEntity<Void> writeMessage(
+        HttpSession session,
         @PathVariable("id") Long roomId,
-        @RequestBody ChatMessageData data
+        @RequestBody ChatMessageRequestData data
     ) {
+        // 유저 정보를 갖고 온다.
+        UserSession currentUser = (UserSession) session.getAttribute(LOGIN_USER);
+        User userInfo = userService.findUserById(currentUser.userId());
+        ChatRoom room = chatService.findChatRoomById(roomId);
 
-        System.out.println("아이디 : " + roomId + " : " + data);
+        // 구독된 채팅방을 지칭한다.
+        // TODO: 어디다 저장하는 것이 좋은 것일까
+        String chatRoomDestination = "/topic/room/" + roomId;
 
-        String destination = "/topic/room/" + roomId;
+        ChatLog chatLog = chatService.writeChat(
+            room, userInfo, data.message(), ChatContentType.TEXT);
 
-        System.out.println(destination);
+        ChatLogResponseDto chatLogResponseDto = ChatLogResponseDto.of(chatLog, 0);
 
-        messagingTemplate.convertAndSend(destination, data);
+        // 해당 채팅룸으로 구독한 유저들에게 전달을 해준다..
+        messagingTemplate.convertAndSend(chatRoomDestination,
+            ChatMessageResponseDto.of(chatLogResponseDto,
+                userInfo.getLoginId(), currentUser.userId()));
 
         return ResponseEntity.ok().build();
     }
