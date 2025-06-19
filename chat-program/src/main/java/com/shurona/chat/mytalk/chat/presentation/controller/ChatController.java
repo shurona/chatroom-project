@@ -74,12 +74,6 @@ public class ChatController {
         Friend friend = friendService.findFriendById(requestId);
 
         // 조회 해서 이미 확인하는지 확인하고 이미 있으면 채팅방으로 redirect
-
-        if (true) {
-            Long chatRoomId = 1L;
-            return "redirect:/chats/v1/rooms/" + chatRoomId;
-        }
-
         chatService.createChatRoom(userInfo, List.of(friend.getFriend()), RoomType.PRIVATE, "개인톡");
 
         return "redirect:/chats/v1/rooms";

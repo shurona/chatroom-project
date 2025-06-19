@@ -70,6 +70,15 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    public ChatRoom findPrivateChatRoomByUser(User user, User partner) {
+
+//        Optional<ChatRoom> room = chatRoomRepository.findByUserAndPartnerOfPrivateRoom(user,
+//            partner);
+
+        return null;
+    }
+
+    @Override
     public ChatRoom findChatRoomById(Long id) {
         return chatRoomRepository.findById(id).orElseThrow(
             () -> new ChatException(BAD_REQUEST));
@@ -123,7 +132,7 @@ public class ChatServiceImpl implements ChatService {
         // 최근 읽은 기록 업데이트
         chatUser.get().updateRecentRead(logs.getFirst().getId());
 
-        // 읽지 않은 사람을 계산하려고 합니다.
+        // 읽지 않은 사람을 계산하기 위한 Map 자료구조
         Map<Long, Long> userRecentReadMap = chatUserRepository.findByRoom(room).stream()
             .collect(toMap(
                 ChatUser::getId,

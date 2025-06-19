@@ -18,6 +18,11 @@ public interface ChatService {
         String names);
 
     /*
+        개인톡을 유저와 파트너로 조회하기
+     */
+    public ChatRoom findPrivateChatRoomByUser(User user, User partner);
+
+    /*
         id를 기준으로 채팅방 단일 조회
      */
     public ChatRoom findChatRoomById(Long id);
@@ -31,6 +36,7 @@ public interface ChatService {
         채팅 입력
      */
     public ChatLog writeChat(ChatRoom room, User user, String chatData, ChatContentType type);
+
 
     /*
         채팅 목록 조회
