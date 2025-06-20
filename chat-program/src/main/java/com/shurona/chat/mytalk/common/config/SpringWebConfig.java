@@ -12,7 +12,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
             .order(1)
-            .addPathPatterns("/**")
+            .addPathPatterns("/ssr/**")
             .excludePathPatterns("/", "/home", "/ssr/login/v1", "/ssr/users/v1/form",
                 "/ssr/logout/v1", "/css/**", "/*.ico", "/error");
     }

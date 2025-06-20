@@ -4,7 +4,7 @@ import com.shurona.chat.mytalk.common.session.UserSession;
 import com.shurona.chat.mytalk.common.variable.StaticVariable;
 import com.shurona.chat.mytalk.user.application.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
-import com.shurona.chat.mytalk.user.presentation.dto.LoginForm;
+import com.shurona.chat.mytalk.user.presentation.form.LoginForm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
