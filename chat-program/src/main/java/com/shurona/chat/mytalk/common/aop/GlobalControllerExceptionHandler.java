@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.common.exception;
+package com.shurona.chat.mytalk.common.aop;
 
 import com.shurona.chat.mytalk.chat.common.ChatErrorCode;
 import com.shurona.chat.mytalk.chat.common.ChatException;
