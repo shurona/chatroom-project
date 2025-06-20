@@ -19,7 +19,11 @@ spring:
 #        format_sql: true # SQL
 #        highlight_sql: true # SQL
 
-# ??
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+
+# 서버 설정
 server:
   port: 19100
   servlet:
