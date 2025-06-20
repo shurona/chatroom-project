@@ -1,15 +1,16 @@
 package com.shurona.chat.mytalk.user.application;
 
+import static com.shurona.chat.mytalk.user.common.exception.UserErrorCode.USER_NOT_FOUND;
+
+import com.shurona.chat.mytalk.user.common.exception.UserException;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.user.domain.vo.UserPhoneNumber;
 import com.shurona.chat.mytalk.user.infrastructure.UserJpaRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -78,7 +79,7 @@ public class UserServiceImpl implements UserService {
      */
     public User findByUserByIdCheckExist(Long userId) {
         return userRepository.findById(userId).orElseThrow(() ->
-            new HttpClientErrorException(HttpStatus.BAD_REQUEST)
+            new UserException(USER_NOT_FOUND)
         );
     }
 }
