@@ -1,6 +1,6 @@
 package com.shurona.chat.mytalk.common.variable;
 
-public class StaticVariable {
+public abstract class StaticVariable {
 
     public final static String LOGIN_USER = "login-session";
 
