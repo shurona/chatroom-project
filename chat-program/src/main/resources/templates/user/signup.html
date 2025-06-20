@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>회원가입 - Chat Application</title>
   <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
@@ -14,7 +14,8 @@
       <p>채팅 서비스를 이용하기 위해 회원가입을 해주세요</p>
     </div>
 
-    <form th:action="@{/users/v1/form}" method="post" th:object="${createUserForm}" class="signup-form">
+    <form class="signup-form" method="post" th:action="@{/ssr/users/v1/form}"
+          th:object="${createUserForm}">
       <div class="alert alert-danger" th:if="${error}" th:text="${error}">
         오류 메시지
       </div>
@@ -25,43 +26,49 @@
 
       <div class="form-group">
         <label for="username">아이디 <span class="required">*</span></label>
-        <input type="text" id="username" name="username" th:field="*{loginId}" placeholder="사용할 아이디를 입력하세요"
-               required autofocus>
-        <small class="form-text res-error" th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">아이디 오류</small>
+        <input autofocus id="username" name="username" placeholder="사용할 아이디를 입력하세요"
+               required
+               th:field="*{loginId}" type="text">
+        <small class="form-text res-error" th:errors="*{loginId}"
+               th:if="${#fields.hasErrors('loginId')}">아이디 오류</small>
       </div>
 
       <div class="form-group">
         <label for="password">비밀번호 <span class="required">*</span></label>
-        <input type="password" id="password" name="password" th:field="*{password}" placeholder="비밀번호를 입력하세요"
-               required>
+        <input id="password" name="password" placeholder="비밀번호를 입력하세요" required
+               th:field="*{password}"
+               type="password">
       </div>
 
       <div class="form-group">
         <label for="confirmPassword">비밀번호 확인 <span class="required">*</span></label>
-        <input type="password" id="confirmPassword" name="confirmPassword"
-               placeholder="비밀번호를 다시 입력하세요" required>
+        <input id="confirmPassword" name="confirmPassword" placeholder="비밀번호를 다시 입력하세요"
+               required type="password">
       </div>
 
       <div class="form-group">
         <label for="phone">휴대 전화 <span class="required">*</span></label>
-        <input type="text" id="phone" name="phone" th:field="*{phoneNumber}" placeholder="휴대 전화를 입력해주세요">
+        <input id="phone" name="phone" placeholder="휴대 전화를 입력해주세요" th:field="*{phoneNumber}"
+               type="text">
         <small class="form-text">비밀번호 찾기에 사용됩니다</small>
-        <small class="form-text res-error" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">번호 오류</small>
+        <small class="form-text res-error" th:errors="*{phoneNumber}"
+               th:if="${#fields.hasErrors('phoneNumber')}">번호 오류</small>
       </div>
 
       <div class="form-group">
         <label for="description">자기 소개 </label>
-        <input type="text" id="description" name="description" th:field="*{description}" placeholder="자기 소개를 입력해주세요"
-               required>
+        <input id="description" name="description" placeholder="자기 소개를 입력해주세요" required
+               th:field="*{description}"
+               type="text">
       </div>
 
       <div class="form-group">
-        <button type="submit" class="btn btn-signup-enter">가입하기</button>
+        <button class="btn btn-signup-enter" type="submit">가입하기</button>
       </div>
 
       <div class="signup-footer">
-        <p>이미 계정이 있으신가요? <a th:href="@{/login/v1}" class="login-link">로그인</a></p>
-        <a th:href="@{/}" class="back-to-home">홈으로 돌아가기</a>
+        <p>이미 계정이 있으신가요? <a class="login-link" th:href="@{/login/v1}">로그인</a></p>
+        <a class="back-to-home" th:href="@{/}">홈으로 돌아가기</a>
       </div>
     </form>
   </div>

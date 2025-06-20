@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <link rel="stylesheet" th:href="@{/css/main.css}">
   <title>친구 요청 - Friend Requested</title>
 </head>
@@ -15,7 +15,7 @@
   </div>
   <div class="request-list">
     <!-- 요청이 없는 경우 -->
-    <div th:if="${#lists.isEmpty(friendRequests)}" class="empty-list">
+    <div class="empty-list" th:if="${#lists.isEmpty(friendRequests)}">
       <i class="fas fa-bell-slash empty-icon"></i>
       <p>받은 친구 요청이 없습니다.</p>
       <p class="sub-text">다른 사용자가 친구 요청을 하면 여기서 확인할 수 있어요!</p>
@@ -23,7 +23,7 @@
 
     <!-- 요청 목록 -->
     <div th:unless="${#lists.isEmpty(friendRequests)}">
-      <div th:each="request : ${friendRequests}" class="request-item">
+      <div class="request-item" th:each="request : ${friendRequests}">
         <div class="friend-avatar">
           <div class="avatar">
             <span th:text="${request.loginId.substring(0,1).toUpperCase()}">U</span>
@@ -34,15 +34,15 @@
           <p th:text="${request.description ?: '친구 요청이 도착했어요!'}">친구 요청 메시지</p>
         </div>
         <div class="friend-actions">
-          <form th:action="@{/friends/v1/accept}" method="post" style="display:inline;">
-            <input type="hidden" name="requestId" th:value="*{request.id}" />
-            <button type="submit" class="btn btn-primary btn-icon" title="수락">
+          <form method="post" style="display:inline;" th:action="@{/ssr/friends/v1/accept}">
+            <input name="requestId" th:value="*{request.id}" type="hidden"/>
+            <button class="btn btn-primary btn-icon" title="수락" type="submit">
               <i class="fas fa-check">수락</i>
             </button>
           </form>
-          <form th:action="@{/friends/v1/refuse}" method="post" style="display:inline;">
-            <input type="hidden" name="requestId" th:value="*{request.id}" />
-            <button type="submit" class="btn btn-secondary btn-icon" title="거절">
+          <form method="post" style="display:inline;" th:action="@{/ssr/friends/v1/refuse}">
+            <input name="requestId" th:value="*{request.id}" type="hidden"/>
+            <button class="btn btn-secondary btn-icon" title="거절" type="submit">
               <i class="fas fa-times">거절</i>
             </button>
           </form>
@@ -54,7 +54,7 @@
 
 <script>
   document.getElementById('btnFriendList').onclick = function() {
-      window.location.href = '/friends/v1';
+      window.location.href = '/ssr/friends/v1';
   };
 </script>
 

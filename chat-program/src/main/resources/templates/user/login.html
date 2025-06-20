@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>로그인 - Chat Application</title>
   <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
@@ -14,29 +14,33 @@
       <p>채팅을 시작하려면 로그인하세요</p>
     </div>
 
-    <form th:action="@{/login/v1}" th:object="${loginForm}" method="post" class="login-form">
+    <form class="login-form" method="post" th:action="@{/ssr/login/v1}" th:object="${loginForm}">
       <div class="alert alert-danger" th:if="${param.error}">
         아이디 또는 비밀번호가 올바르지 않습니다.
       </div>
 
       <div class="form-group">
         <label for="username">아이디</label>
-        <input type="text" id="username" name="username" th:field="*{loginId}" placeholder="아이디를 입력하세요" required autofocus>
-        <small class="form-text res-error" th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">아이디 오류</small>
+        <input autofocus id="username" name="username" placeholder="아이디를 입력하세요"
+               required th:field="*{loginId}" type="text">
+        <small class="form-text res-error" th:errors="*{loginId}"
+               th:if="${#fields.hasErrors('loginId')}">아이디 오류</small>
       </div>
 
       <div class="form-group">
         <label for="password">비밀번호</label>
-        <input type="password" id="password" name="password" th:field="*{password}" placeholder="비밀번호를 입력하세요" required>
-        <small class="form-text res-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">비밀번호 오류</small>
+        <input id="password" name="password" placeholder="비밀번호를 입력하세요" required
+               th:field="*{password}" type="password">
+        <small class="form-text res-error" th:errors="*{password}"
+               th:if="${#fields.hasErrors('password')}">비밀번호 오류</small>
       </div>
 
       <div class="form-group">
-        <button type="submit" class="btn btn-login">로그인</button>
+        <button class="btn btn-login" type="submit">로그인</button>
       </div>
 
       <div class="login-footer">
-        <a th:href="@{/}" class="back-to-home">홈으로 돌아가기</a>
+        <a class="back-to-home" th:href="@{/home}">홈으로 돌아가기</a>
       </div>
     </form>
   </div>

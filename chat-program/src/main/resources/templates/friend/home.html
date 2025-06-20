@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/layout :: head('친구 목록')">
+<head th:replace="~{fragments/layout :: head('친구 목록')}">
 </head>
 <body>
-<div th:replace="fragments/layout :: nav"></div>
+<div th:replace="~{fragments/layout :: nav}"></div>
 
 <div class="container main-container">
   <div class="page-header">
@@ -46,13 +46,13 @@
           <p th:text="${friend.description}">상태메시지</p>
         </div>
         <div class="friend-actions">
-          <form method="post" style="display:inline;" th:action="@{/chats/v1/rooms/private}">
+          <form method="post" style="display:inline;" th:action="@{/ssr/chats/v1/rooms/private}">
             <input name="requestId" th:value="${friend.id}" type="hidden"/>
             <button class="btn btn-icon btn-chat" th:data-id="${friend.id}">
               <i class="fas fa-comment"></i>
             </button>
           </form>
-          <form method="post" style="display:inline;" th:action="@{/friends/v1/banned}">
+          <form method="post" style="display:inline;" th:action="@{/ssr/friends/v1/banned}">
             <input name="requestId" th:value="${friend.id}" type="hidden"/>
             <button class="btn btn-icon btn-trash" type="submit">
               <i class="fas fa-trash"></i>
@@ -72,7 +72,7 @@
       <span class="close">&times;</span>
     </div>
     <div class="modal-body">
-      <form method="post" th:action="@{/friends/v1/new}" th:object="${addFriendForm}">
+      <form method="post" th:action="@{/ssr/friends/v1/new}" th:object="${addFriendForm}">
         <div class="form-group">
           <label for="friendId">친구 아이디</label>
           <input id="friendId" name="friendId" placeholder="친구의 아이디를 입력하세요" required
@@ -128,7 +128,7 @@
 
   // 친구 요청 버튼을 클릭했을 때 페이지를 이동한다.
   document.getElementById('btnFriendRequests').onclick = function() {
-      window.location.href = '/friends/v1/requests';
+      window.location.href = '/ssr/friends/v1/requests';
   };
 
 
