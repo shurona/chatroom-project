@@ -22,6 +22,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 
+/**
+ * 채팅방을 나타내는 엔티티 클래스입니다.
+ */
 @Entity(name = "chat_room")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

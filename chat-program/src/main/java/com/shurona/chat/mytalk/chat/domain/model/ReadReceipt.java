@@ -14,6 +14,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 읽음 표시를 나타내는 엔티티 클래스입니다.
+ */
 @Entity
 @Table(
     name = "read_receipt",
