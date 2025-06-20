@@ -39,10 +39,9 @@ dependencies {
     // socket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-    // crypto 라이브러리만 추가
-    implementation group: 'org.springframework.security',
-            name: 'spring-security-crypto',
-            version: '6.4.4'
+    // security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     // MYSQL
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -50,6 +49,11 @@ dependencies {
     // lombok
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
