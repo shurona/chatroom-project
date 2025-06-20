@@ -1,10 +1,10 @@
 package com.shurona.chat.mytalk.user.presentation.controller;
 
-import com.shurona.chat.mytalk.user.service.UserService;
-import com.shurona.chat.mytalk.user.domain.model.User;
-import com.shurona.chat.mytalk.user.presentation.dto.LoginForm;
 import com.shurona.chat.mytalk.common.session.UserSession;
 import com.shurona.chat.mytalk.common.variable.StaticVariable;
+import com.shurona.chat.mytalk.user.domain.model.User;
+import com.shurona.chat.mytalk.user.presentation.dto.LoginForm;
+import com.shurona.chat.mytalk.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +24,9 @@ public class LoginController {
 
     private final UserService userService;
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public String home(
-        @SessionAttribute(name= StaticVariable.LOGIN_USER, required = false) UserSession userSession,
+        @SessionAttribute(name = StaticVariable.LOGIN_USER, required = false) UserSession userSession,
         Model model
     ) {
 
@@ -34,10 +34,10 @@ public class LoginController {
             return "user/home";
         }
 
-        return "redirect:/friends/v1";
+        return "redirect:/ssr/friends/v1";
     }
 
-    @PostMapping("/login/v1")
+    @PostMapping("/ssr/login/v1")
     public String login(
         @Validated @ModelAttribute("loginForm") LoginForm form,
         @RequestParam(value = "redirectURL", defaultValue = "/") String redirectURL,
@@ -65,16 +65,16 @@ public class LoginController {
         session.setMaxInactiveInterval(StaticVariable.LOGIN_SESSION_TIME);
         session.setAttribute(StaticVariable.LOGIN_USER, userSession);
 
-        return "redirect:" + "/friends/v1";
+        return "redirect:" + "/ssr/friends/v1";
     }
 
-    @GetMapping("/login/v1")
+    @GetMapping("/ssr/login/v1")
     public String loginForm(@ModelAttribute("loginForm") LoginForm form) {
 
         return "user/login";
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/ssr/logout/v1")
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
@@ -82,7 +82,7 @@ public class LoginController {
             session.invalidate();
         }
 
-        return "redirect:/";
+        return "redirect:/home";
     }
 
 }

@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequiredArgsConstructor
-@RequestMapping("/chats/v1")
+@RequestMapping("/ssr/chats/v1")
 @Controller
 public class ChatController {
 
@@ -76,7 +76,7 @@ public class ChatController {
         // 조회 해서 이미 확인하는지 확인하고 이미 있으면 채팅방으로 redirect
         chatService.createChatRoom(userInfo, List.of(friend.getFriend()), RoomType.PRIVATE, "개인톡");
 
-        return "redirect:/chats/v1/rooms";
+        return "redirect:/ssr/chats/v1/rooms";
     }
 
     @GetMapping("/rooms/{id}")

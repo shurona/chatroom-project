@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequiredArgsConstructor
-@RequestMapping("/friends/v1")
+@RequestMapping("/ssr/friends/v1")
 @Controller
 public class FriendController {
 
@@ -88,7 +88,7 @@ public class FriendController {
 
         // 인터셉터에서 확인하지만 2중으로 로그인 상태 확인
         if (currentUser == null) {
-            return "redirect:/user/login";
+            return "redirect:/ssr/user/login";
         }
 
         User user = userService.findUserById(currentUser.userId());
@@ -112,7 +112,7 @@ public class FriendController {
 
         friendService.saveFriend(user, friend);
 
-        return "redirect:/friends/v1";
+        return "redirect:/ssr/friends/v1";
     }
 
     /*
@@ -131,7 +131,7 @@ public class FriendController {
         // 수락을 했으니 다음 것도 진행
         friendService.saveFriend(friendById.getFriend(), friendById.getUser());
 
-        return "redirect:/friends/v1/requests";
+        return "redirect:/ssr/friends/v1/requests";
     }
 
     @PostMapping("/refuse")
@@ -144,7 +144,7 @@ public class FriendController {
         Friend friendById = friendService.findFriendById(requestId);
         friendService.changeStatusById(friendById.getId(), FriendRequest.REFUSED);
 
-        return "redirect:/friends/v1/requests";
+        return "redirect:/ssr/friends/v1/requests";
 
     }
 
@@ -158,6 +158,6 @@ public class FriendController {
         Friend friendById = friendService.findFriendById(requestId);
         friendService.changeStatusById(friendById.getId(), FriendRequest.BANNED);
 
-        return "redirect:/friends/v1";
+        return "redirect:/ssr/friends/v1";
     }
 }

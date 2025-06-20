@@ -1,7 +1,7 @@
 package com.shurona.chat.mytalk.user.presentation.controller;
 
-import com.shurona.chat.mytalk.user.service.UserService;
 import com.shurona.chat.mytalk.user.presentation.dto.CreateUserForm;
+import com.shurona.chat.mytalk.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequiredArgsConstructor
-@RequestMapping("/users/v1")
+@RequestMapping("/ssr/users/v1")
 @Controller
 public class UserController {
 
@@ -43,14 +43,13 @@ public class UserController {
         userService.saveUser(
             form.loginId(), form.password(), form.description(), form.phoneNumber());
 
-        return "redirect:" + "/login/v1";
+        return "redirect:" + "/ssr/login/v1";
     }
 
     @GetMapping("/form")
     public String createUserForm(
         @Validated @ModelAttribute("createUserForm") CreateUserForm form
     ) {
-
 
         return "user/signup";
     }
