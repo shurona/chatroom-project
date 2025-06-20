@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.user.service;
+package com.shurona.chat.mytalk.user.application;
 
 import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.user.domain.vo.UserPhoneNumber;
@@ -14,14 +14,14 @@ import org.springframework.web.client.HttpClientErrorException;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserJpaRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
-    public Long saveUser(String loginId, String password, String description, String phoneNumber){
+    public Long saveUser(String loginId, String password, String description, String phoneNumber) {
 
         User newUser = User.createUser(loginId, description, phoneNumber);
         newUser.settingPassword(passwordEncoder.encode(password));
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User findUserById(Long userId){
+    public User findUserById(Long userId) {
         return findByUserByIdCheckExist(userId);
     }
 
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public void deleteUser(Long userId){
+    public void deleteUser(Long userId) {
         User user = findByUserByIdCheckExist(userId);
         user.deleteUser();
 
