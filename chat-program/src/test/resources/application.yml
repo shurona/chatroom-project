@@ -9,3 +9,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+
+jwt:
+  secret:
+    key: 7Leo7JeF7Leo7JeF7Leo7JeF7Leo7JeF7Leo7JeF7Leo7JeF7Leo7JeF

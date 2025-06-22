@@ -10,6 +10,7 @@ import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
 import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.domain.type.RoomType;
 import com.shurona.chat.mytalk.chat.presentation.dtos.ChatLogResponseDto;
+import com.shurona.chat.mytalk.config.TestContainerConfig;
 import com.shurona.chat.mytalk.friend.application.FriendService;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
 import com.shurona.chat.mytalk.user.application.UserService;
@@ -17,12 +18,14 @@ import com.shurona.chat.mytalk.user.domain.model.User;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
+@ExtendWith(TestContainerConfig.class)
 @Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class ChatServiceImplTest {

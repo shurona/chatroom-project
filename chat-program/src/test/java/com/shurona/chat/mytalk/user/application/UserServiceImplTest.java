@@ -1,13 +1,16 @@
 package com.shurona.chat.mytalk.user.application;
 
+import com.shurona.chat.mytalk.config.TestContainerConfig;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.transaction.annotation.Transactional;
 
+@ExtendWith(TestContainerConfig.class)
 @Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class UserServiceImplTest {
