@@ -27,7 +27,11 @@ public class JwtUtils {
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
 
+    // access Token 유효기간
     public static final long TOKEN_TIME = 24 * 60 * 60 * 1000L; // 60분
+
+    // Refresh Token 유효기간
+    public static final long REFRESH_TOKEN_TIME = 14 * 24 * 60 * 60 * 1000L;
 
 
     private String secretKey;
@@ -79,6 +83,42 @@ public class JwtUtils {
      */
     public Claims getBodyFromJwt(String jwtToken) {
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(jwtToken).getPayload();
+    }
+
+
+    /**
+     * Refresh Token 생성
+     */
+    public String createRefreshToken(Long userId) {
+        Date date = new Date();
+
+        return BEARER_PREFIX +
+            Jwts.builder()
+                .subject(String.valueOf(userId))
+                .expiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
+                .issuedAt(date)
+                .signWith(key)
+                .compact();
+    }
+
+    /**
+     * Refresh Token으로 새 Access Token 생성
+     */
+    public String refreshAccessToken(String refreshToken) {
+        // 리프레시 토큰 유효성 검사
+        if (!checkValidJwtToken(substringToken(refreshToken))) {
+            throw new UserException(JWT_TOKEN_INVALID);
+        }
+
+        // 리프레시 토큰에서 사용자 ID 추출
+        Claims claims = getBodyFromJwt(substringToken(refreshToken));
+        Long userId = Long.parseLong(claims.getSubject());
+
+        // DB에서 사용자 정보와 권한 조회 필요 (서비스 계층에서 구현)
+        UserRole role = UserRole.USER; // 예시, 실제로는 DB에서 조회
+
+        // 새 액세스 토큰 생성
+        return createToken(userId, role);
     }
 
 }
