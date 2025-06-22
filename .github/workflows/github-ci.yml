@@ -9,12 +9,12 @@ name: Java CI with Gradle
 on:
   push:
     paths:
-      - src/**
+      - chat-program/src/**
       - .github/**
-      - gradlew
-      - build.gradle
-      - gradlew.bat
-      - settings.gradle
+      - chat-program/gradlew
+      - chat-program/build.gradle
+      - chat-program/gradlew.bat
+      - chat-program/settings.gradle
     branches: [ "main" ]
 
 jobs:
