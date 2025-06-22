@@ -15,8 +15,8 @@ import com.shurona.chat.mytalk.chat.presentation.dtos.ChatRoomResponseDto;
 import com.shurona.chat.mytalk.common.session.UserSession;
 import com.shurona.chat.mytalk.friend.application.FriendService;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
+import com.shurona.chat.mytalk.user.application.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
-import com.shurona.chat.mytalk.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequiredArgsConstructor
-@RequestMapping("/chats/v1")
+@RequestMapping("/ssr/chats/v1")
 @Controller
 public class ChatController {
 
@@ -74,15 +74,9 @@ public class ChatController {
         Friend friend = friendService.findFriendById(requestId);
 
         // 조회 해서 이미 확인하는지 확인하고 이미 있으면 채팅방으로 redirect
-
-        if (true) {
-            Long chatRoomId = 1L;
-            return "redirect:/chats/v1/rooms/" + chatRoomId;
-        }
-
         chatService.createChatRoom(userInfo, List.of(friend.getFriend()), RoomType.PRIVATE, "개인톡");
 
-        return "redirect:/chats/v1/rooms";
+        return "redirect:/ssr/chats/v1/rooms";
     }
 
     @GetMapping("/rooms/{id}")

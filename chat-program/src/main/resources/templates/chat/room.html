@@ -58,6 +58,7 @@
     stompClient.activate(); // 연결 활성화
   }
 
+  // 연결이 성공하면 구독을 등록해준다.
   function stompConnectHandler() {
     console.log('Connected!');
     const roomId = [[${header.id}]];
@@ -65,7 +66,22 @@
     stompClient.subscribe(roomUrl, function(message) {
       const chat = JSON.parse(message.body);
       showMessage(chat);  // 메시지 표시 함수
+      settingMessage(chat);
     });
+  }
+
+  // 구독으로 부터 메시지를 받은 경우 읽음 처리를 소켓을 통해서 전달한다.
+  function settingMessage(chat) {
+    const destinationPath = '/app/chats/v1/socket/room';
+    try {
+        const output = {
+        id: chat.id,
+      }
+      stompClient.publish({ destination: destinationPath, body: JSON.stringify(output) });
+    } catch(e) {
+      alert("구독으로 유저 읽음 처리 에러");
+    }
+    
   }
 
   // 실패시 에러 로그
@@ -80,7 +96,7 @@
     const roomId = [[${header.id}]];
 
     const message = document.getElementById('message').value;
-    const url = `/chats/v1/rooms/${roomId}/message`
+    const url = `/ssr/chats/v1/rooms/${roomId}/message`
 
 
     fetch(url, {

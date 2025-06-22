@@ -55,6 +55,9 @@ public class ChatUser extends BaseEntity {
 
 
     public void updateRecentRead(Long logId) {
-        this.lastReadMessageId = logId;
+        // 최근 읽은 메시지가 최근이면 업데이트 해준다.
+        if (logId > this.lastReadMessageId) {
+            this.lastReadMessageId = logId;
+        }
     }
 }

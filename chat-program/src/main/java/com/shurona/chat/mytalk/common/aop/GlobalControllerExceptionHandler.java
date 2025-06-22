@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.common.exception;
+package com.shurona.chat.mytalk.common.aop;
 
 import com.shurona.chat.mytalk.chat.common.ChatErrorCode;
 import com.shurona.chat.mytalk.chat.common.ChatException;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalControllerExceptionHandler {
 
     @ExceptionHandler(ChatException.class)
     public String handleChatError(ChatException e, Model model) {

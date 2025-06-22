@@ -19,6 +19,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 채팅 로그를 나타내는 엔티티 클래스입니다.
+ * 채팅방 내에서의 메시지 기록을 저장합니다.
+ */
 @Entity(name = "chat_log")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

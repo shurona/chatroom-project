@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Chat Application</title>
   <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
@@ -18,9 +18,9 @@
       <h2>환영합니다!</h2>
       <p>친구들과 함께 대화를 나눠보세요</p>
       <div class="buttons">
-        <a th:href="@{/login/v1}" class="btn btn-primary">로그인</a>
-        <a th:href="@{/users/v1/form}" class="btn btn-signup">회원 가입</a>
-        <a th:href="@{/about}" class="btn btn-secondary">더 알아보기</a>
+        <a class="btn btn-primary" th:href="@{/ssr/login/v1}">로그인</a>
+        <a class="btn btn-signup" th:href="@{/ssr/users/v1/form}">회원 가입</a>
+        <a class="btn btn-secondary" th:href="@{/about}">더 알아보기</a>
       </div>
     </div>
 

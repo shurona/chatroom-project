@@ -19,6 +19,8 @@ public class SocketInterceptor implements ChannelInterceptor {
             String authHeader = accessor.getFirstNativeHeader(HttpHeaders.AUTHORIZATION);
 
             //TODO: 이런 곳에서 접근을 막을 수 있을까
+        } else if (StompCommand.SEND.equals(accessor.getCommand())) {
+            // send 접근
         }
 
         return message;

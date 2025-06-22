@@ -1,9 +1,12 @@
-package com.shurona.chat.mytalk.user.service;
+package com.shurona.chat.mytalk.user.application;
 
 import com.shurona.chat.mytalk.user.domain.model.User;
 
 public interface UserService {
 
+    /**
+     * 유저를 저장한다.
+     */
     public Long saveUser(String loginId, String password, String description, String phoneNumber);
 
     public boolean checkLoginIdDuplicated(String loginId);

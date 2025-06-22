@@ -10,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,6 +23,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 
+/**
+ * 채팅방을 나타내는 엔티티 클래스입니다.
+ */
 @Entity(name = "chat_room")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -45,10 +49,10 @@ public class ChatRoom extends BaseEntity {
     private LocalDateTime lastTime;
 
     @BatchSize(size = 30)
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ChatUser> chatUserList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ChatLog> chatLogList = new ArrayList<>();
 
     /*
