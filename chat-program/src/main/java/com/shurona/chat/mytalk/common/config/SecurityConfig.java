@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
 @Configuration
@@ -38,7 +37,8 @@ public class SecurityConfig {
         // 경로별 인가 작업
         http
             .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                .requestMatchers(new AntPathRequestMatcher("/api/v1/login"))
+                .requestMatchers(
+                    "/api/v1/users/sign-up", "/api/v1/login", "/api/v1/refresh") // 회원 가입, 로그인, 리프레시
                 .permitAll()
                 .requestMatchers(
                     "/home", "/ssr/**", "/socket/chat", "/css/**", "/*.ico", "/error")
