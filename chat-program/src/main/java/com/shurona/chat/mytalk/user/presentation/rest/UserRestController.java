@@ -1,9 +1,12 @@
 package com.shurona.chat.mytalk.user.presentation.rest;
 
+import com.shurona.chat.mytalk.common.dto.CommonResponseDto;
 import com.shurona.chat.mytalk.common.dto.ErrorResponseDto;
 import com.shurona.chat.mytalk.common.security.UserDetailsImpl;
 import com.shurona.chat.mytalk.user.application.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
+import com.shurona.chat.mytalk.user.presentation.dto.request.UserCreateRequestDto;
+import com.shurona.chat.mytalk.user.presentation.dto.response.UserCreateResponseDto;
 import com.shurona.chat.mytalk.user.presentation.dto.response.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +17,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,6 +38,27 @@ public class UserRestController {
 
         User user = userService.findUserById(id);
         return ResponseEntity.ok(UserResponseDto.from(user)); // 사용자 정보를 반환
+    }
+
+    @PostMapping("/sign-up")
+    public ResponseEntity<CommonResponseDto<UserCreateResponseDto>> createUser(
+        @RequestBody UserCreateRequestDto requestDto
+    ) {
+
+        Long userId = userService.saveUser(
+            requestDto.loginId(),
+            requestDto.password(),
+            requestDto.description(),
+            requestDto.phoneNumber()
+        );
+
+        return ResponseEntity.ok(
+            CommonResponseDto.ofData(
+                UserCreateResponseDto.of(
+                    userId, requestDto.loginId()
+                )
+            )
+        );
     }
 
 
