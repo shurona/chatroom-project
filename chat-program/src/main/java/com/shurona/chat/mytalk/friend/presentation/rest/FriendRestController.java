@@ -38,9 +38,6 @@ public class FriendRestController {
         List<FriendRequestResponseDto> friendList = FriendRequestResponseDto.from(
             friendService.findAcceptedFriendListByUser(user)
         );
-        List<FriendRequestResponseDto> friendRequestResponseDtoList = FriendRequestResponseDto.from(
-            friendService.findRequestedFriendListByUser(user)
-        );
 
         return ResponseEntity.ok(
             CommonResponseDto.ofData(
