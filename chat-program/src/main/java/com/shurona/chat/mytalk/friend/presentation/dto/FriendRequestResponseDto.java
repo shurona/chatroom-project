@@ -8,7 +8,8 @@ public record FriendRequestResponseDto(
     Long id,
     String loginId,
     String description,
-    LocalDateTime createdAt
+    LocalDateTime createdAt,
+    Boolean isOnline // TODO: online 확인 로직 추가
 ) {
 
     public static List<FriendRequestResponseDto> from(List<Friend> friendList) {
@@ -17,7 +18,7 @@ public record FriendRequestResponseDto(
                     friend.getId(),
                     friend.getFriend().getLoginId(),
                     friend.getFriend().getDescription(),
-                    friend.getCreatedAt()))
+                    friend.getCreatedAt(), true))
             .toList();
     }
 
