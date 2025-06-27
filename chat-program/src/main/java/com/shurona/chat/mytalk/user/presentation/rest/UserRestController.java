@@ -30,6 +30,7 @@ public class UserRestController {
 
     private final UserService userService;
 
+    // 관리자이거나 자신의 정보만 조회 가능하도록 설정
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userDetails.userId() == #id")
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(
