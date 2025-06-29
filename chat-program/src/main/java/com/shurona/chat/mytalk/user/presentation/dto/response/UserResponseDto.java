@@ -5,6 +5,7 @@ import com.shurona.chat.mytalk.user.domain.model.User;
 public record UserResponseDto(
     Long userId,
     String loginId,
+    String nickName,
     String description,
     String phoneNumber
 ) {
@@ -13,6 +14,7 @@ public record UserResponseDto(
         return new UserResponseDto(
             user.getId(),
             user.getLoginId(),
+            user.getNickName(),
             user.getDescription(),
             user.getPhoneNumber().getPhoneNumber()
         );
