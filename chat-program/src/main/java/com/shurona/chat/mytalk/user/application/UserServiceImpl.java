@@ -6,8 +6,11 @@ import com.shurona.chat.mytalk.user.common.exception.UserException;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.user.domain.vo.UserPhoneNumber;
 import com.shurona.chat.mytalk.user.infrastructure.UserJpaRepository;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +27,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long saveUser(String loginId, String password, String description, String phoneNumber) {
 
-        User newUser = User.createUser(loginId, description, phoneNumber);
+        User newUser = User.createUser(loginId, loginId, description, phoneNumber);
         newUser.settingPassword(passwordEncoder.encode(password));
 
         User save = userRepository.save(newUser);
@@ -74,9 +77,20 @@ public class UserServiceImpl implements UserService {
         return passwordEncoder.matches(inputPassword, dbPassword);
     }
 
+    @Override
+    public List<User> findUserListByNickname(Long userId, String nickname, Pageable pageable) {
+
+        Page<User> nickNameContaining = userRepository.findNonFriendsByUserIdAndNicknameContaining(
+            userId,
+            nickname,
+            pageable);
+
+        return nickNameContaining.toList();
+    }
+
     /*
-        private method
-     */
+            private method
+         */
     public User findByUserByIdCheckExist(Long userId) {
         return userRepository.findById(userId).orElseThrow(() ->
             new UserException(USER_NOT_FOUND)

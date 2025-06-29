@@ -6,8 +6,8 @@ import com.shurona.chat.mytalk.common.session.UserSession;
 import com.shurona.chat.mytalk.friend.application.FriendService;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
 import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
-import com.shurona.chat.mytalk.friend.presentation.dto.AddFriendForm;
-import com.shurona.chat.mytalk.friend.presentation.dto.FriendRequestResponseDto;
+import com.shurona.chat.mytalk.friend.presentation.dto.FriendSsrResponseDto;
+import com.shurona.chat.mytalk.friend.presentation.form.AddFriendForm;
 import com.shurona.chat.mytalk.user.application.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import jakarta.servlet.http.HttpSession;
@@ -42,17 +42,19 @@ public class FriendController {
         User user = userService.findUserById(currentUser.userId());
 
         // 친구 목록 조회
-        List<FriendRequestResponseDto> friendList = FriendRequestResponseDto.from(
+        List<FriendSsrResponseDto> friendList = FriendSsrResponseDto.from(
             friendService.findAcceptedFriendListByUser(user)
         );
-        List<FriendRequestResponseDto> friendRequestResponseDtoList = FriendRequestResponseDto.from(
+
+        // 친구 요청 목록 조회
+        List<FriendSsrResponseDto> friendResponseDtoList = FriendSsrResponseDto.from(
             friendService.findRequestedFriendListByUser(user)
         );
 
         // 모델에 친구 목록 추가
         model.addAttribute("friends", friendList);
         model.addAttribute("userInfo", user);
-        model.addAttribute("friendRequests", friendRequestResponseDtoList);
+        model.addAttribute("friendRequests", friendResponseDtoList);
 
         return "friend/home";
     }
@@ -66,7 +68,7 @@ public class FriendController {
 
         User user = userService.findUserById(currentUser.userId());
 
-        List<FriendRequestResponseDto> friendResponseDtoList = FriendRequestResponseDto.from(
+        List<FriendSsrResponseDto> friendResponseDtoList = FriendSsrResponseDto.from(
             friendService.findRequestedFriendListByUser(user)
         );
 
@@ -101,7 +103,7 @@ public class FriendController {
         // 에러 발생 확인
         if (bindingResult.hasErrors()) {
             // 에러 발생 시 다시 리턴해 줘야 하므로 필요한 데이터를 넣어준다.
-            List<FriendRequestResponseDto> friendList = FriendRequestResponseDto.from(
+            List<FriendSsrResponseDto> friendList = FriendSsrResponseDto.from(
                 friendService.findAcceptedFriendListByUser(user)
             );
             model.addAttribute("userInfo", user);

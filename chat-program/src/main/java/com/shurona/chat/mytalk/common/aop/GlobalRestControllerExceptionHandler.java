@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.messaging.handler.annotation.support.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,7 +25,8 @@ public class GlobalRestControllerExceptionHandler {
     }
 
     // 입력 에러 처리
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ExceptionHandler({HttpMessageNotReadableException.class,
+        MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ErrorResponseDto> handleClientException(RuntimeException e) {
         log.error("RuntimeException occurred: {}", e.getMessage(), e);
         ErrorResponseDto errorResponse = new ErrorResponseDto("Runtime Exception occurred "

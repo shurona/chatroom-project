@@ -5,7 +5,7 @@ public record UserCreateResponseDto(
     String loginId
 ) {
 
-    public static UserCreateResponseDto of(Long userId, String loginIn) {
-        return new UserCreateResponseDto(userId, loginIn);
+    public static UserCreateResponseDto of(Long userId, String loginId) {
+        return new UserCreateResponseDto(userId, loginId);
     }
 }

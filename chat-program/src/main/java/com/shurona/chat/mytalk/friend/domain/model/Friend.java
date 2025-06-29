@@ -16,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,6 +45,9 @@ public class Friend extends BaseEntity {
     @Column(name = "request_status")
     private FriendRequest request;
 
+    @Column(name = "rcv_time")
+    private LocalDateTime receiveTime;
+
     @Column
     private boolean banned;
 
@@ -71,6 +75,7 @@ public class Friend extends BaseEntity {
         newFriend.friend = friend;
         newFriend.request = FriendRequest.ACCEPTED;
         newFriend.banned = false;
+        newFriend.receiveTime = LocalDateTime.now();
 
         return newFriend;
     }
@@ -80,6 +85,7 @@ public class Friend extends BaseEntity {
             throw new FriendException(INVALID_INPUT);
         }
         this.request = FriendRequest.ACCEPTED;
+        this.receiveTime = LocalDateTime.now();
     }
 
     public void refuseFriendRequest() {
@@ -87,6 +93,7 @@ public class Friend extends BaseEntity {
             throw new FriendException(INVALID_INPUT);
         }
         this.request = FriendRequest.REFUSED;
+        this.receiveTime = LocalDateTime.now();
     }
 
     public void bannedFriendRequest() {
@@ -95,5 +102,6 @@ public class Friend extends BaseEntity {
             throw new FriendException(INVALID_INPUT);
         }
         this.request = FriendRequest.BANNED;
+        this.receiveTime = LocalDateTime.now();
     }
 }
