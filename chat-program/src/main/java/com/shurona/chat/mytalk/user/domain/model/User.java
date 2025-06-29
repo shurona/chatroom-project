@@ -37,6 +37,10 @@ public class User extends BaseEntity {
     @Column(unique = true, name = "username")
     private String loginId;
 
+    @Column(unique = true, name = "nick_name")
+    private String nickName;
+
+
     @Column
     private String description;
 
@@ -57,9 +61,11 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<ChatUser> chatUserList = new ArrayList<>();
 
-    public static User createUser(String loginId, String description, String phoneNumber) {
+    public static User createUser(String loginId, String nickName,
+        String description, String phoneNumber) {
         User user = new User();
         user.loginId = loginId;
+        user.nickName = nickName;
         user.description = description;
         user.phoneNumber = new UserPhoneNumber(phoneNumber);
         user.userRole = UserRole.USER; // 기본 롤은 USER로 설정
