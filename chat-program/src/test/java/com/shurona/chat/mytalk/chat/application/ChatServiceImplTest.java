@@ -9,7 +9,7 @@ import com.shurona.chat.mytalk.chat.common.ChatException;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
 import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.domain.type.RoomType;
-import com.shurona.chat.mytalk.chat.presentation.dtos.ChatLogResponseDto;
+import com.shurona.chat.mytalk.chat.presentation.dto.ChatLogResponseDto;
 import com.shurona.chat.mytalk.config.TestContainerConfig;
 import com.shurona.chat.mytalk.friend.application.FriendService;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;

@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.chat.presentation.dtos;
+package com.shurona.chat.mytalk.chat.presentation.dto;
 
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
 import java.time.LocalDateTime;

@@ -14,7 +14,7 @@ import com.shurona.chat.mytalk.chat.domain.validator.ChatRoomValidator;
 import com.shurona.chat.mytalk.chat.infrastructure.ChatLogJpaRepository;
 import com.shurona.chat.mytalk.chat.infrastructure.ChatRoomJpaRepository;
 import com.shurona.chat.mytalk.chat.infrastructure.ChatUserJpaRepository;
-import com.shurona.chat.mytalk.chat.presentation.dtos.ChatLogResponseDto;
+import com.shurona.chat.mytalk.chat.presentation.dto.ChatLogResponseDto;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import java.util.ArrayList;
 import java.util.List;
