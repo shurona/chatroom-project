@@ -48,8 +48,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void findUserList() {
-        //TODO: 유저 목록 조회 시 구현
+    public List<User> findUserList(List<Long> userIds) {
+        return userRepository.findAllById(userIds);
     }
 
     @Transactional
