@@ -1,11 +1,11 @@
 package com.shurona.chat.mytalk.chat.application;
 
-import static com.shurona.chat.mytalk.chat.common.ChatErrorCode.PRIVATE_CHAT_FRIEND_REQUIRED;
-import static com.shurona.chat.mytalk.chat.common.ChatErrorCode.USER_NOT_INCLUDE_ROOM;
+import static com.shurona.chat.mytalk.chat.common.exception.ChatErrorCode.PRIVATE_CHAT_FRIEND_REQUIRED;
+import static com.shurona.chat.mytalk.chat.common.exception.ChatErrorCode.USER_NOT_INCLUDE_ROOM;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import com.shurona.chat.mytalk.chat.common.ChatException;
+import com.shurona.chat.mytalk.chat.common.exception.ChatException;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
 import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.domain.type.RoomType;

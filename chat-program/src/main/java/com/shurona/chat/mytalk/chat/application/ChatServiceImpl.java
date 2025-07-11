@@ -1,10 +1,10 @@
 package com.shurona.chat.mytalk.chat.application;
 
-import static com.shurona.chat.mytalk.chat.common.ChatErrorCode.BAD_REQUEST;
+import static com.shurona.chat.mytalk.chat.common.exception.ChatErrorCode.BAD_REQUEST;
 import static java.util.stream.Collectors.toMap;
 
 import com.shurona.chat.mytalk.chat.application.cache.ChatCacheInfo;
-import com.shurona.chat.mytalk.chat.common.ChatException;
+import com.shurona.chat.mytalk.chat.common.exception.ChatException;
 import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
 import com.shurona.chat.mytalk.chat.domain.model.ChatUser;
@@ -40,23 +40,26 @@ public class ChatServiceImpl implements ChatService {
     // domain service
     private final ChatRoomValidator chatRoomValidator;
 
-    /*
-        // 일단 개인톡 만들고 그룹톡을 만들어봅시다.
-        // TODO: 그룹톡 개선해보기
+    /**
+     * 일단 개인톡 만들고 그룹톡을 만들어봅시다.
+     * TODO: 그룹톡 개선해보기
      */
     @Transactional
     @Override
-    public ChatRoom createChatRoom(User user, List<User> invitedUserList, RoomType type,
-        String name) {
+    public ChatRoom createChatRoom(
+        User user, List<User> invitedUserList, RoomType type, String name) {
 
+        // 채팅창에 초대한 유저 목록
         List<User> withUsers = new ArrayList<>(invitedUserList);
-        withUsers.add(user);
+        withUsers.add(user); // 자기자신을 채팅장 목록에 추가한다.
 
-//        // 이미 존재하는지 확인한다.
+        // 이미 존재하는지 확인한다.
         List<ChatRoom> privateRoomsWithUsers = chatRoomRepository.findPrivateRoomContainingExactUsers(
             withUsers, type, withUsers.size());
+
+        // 생성하는 채팅이 개인톡이고 이미 채팅방이 존재하면 추가로 생성하지 않는다.
         if (type.equals(RoomType.PRIVATE) && !privateRoomsWithUsers.isEmpty()) {
-//            System.out.println(privateRoomsWithUsers.size());
+            // System.out.println(privateRoomsWithUsers.size());
             return privateRoomsWithUsers.getFirst();
         }
 

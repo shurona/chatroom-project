@@ -14,8 +14,8 @@ public interface ChatService {
     /**
      * 채팅방 생성
      */
-    public ChatRoom createChatRoom(User user, List<User> invitedUserList, RoomType type,
-        String names);
+    public ChatRoom createChatRoom(
+        User user, List<User> invitedUserList, RoomType type, String name);
 
     /**
      * 개인톡을 유저와 파트너로 조회하기
