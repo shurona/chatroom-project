@@ -6,6 +6,7 @@ import java.util.List;
 
 public record FriendResponseDto(
     Long id,
+    Long friendUserid,
     String nickName,
     String description,
     LocalDateTime createdAt,
@@ -16,6 +17,7 @@ public record FriendResponseDto(
         return friendList.stream().map(
                 (friend) -> new FriendResponseDto(
                     friend.getId(),
+                    friend.getFriend().getId(),
                     friend.getFriend().getNickName(),
                     friend.getFriend().getDescription(),
                     friend.getCreatedAt(), true))
