@@ -11,7 +11,7 @@ import com.shurona.chat.mytalk.chat.presentation.dto.ChatLogResponseDto;
 import com.shurona.chat.mytalk.chat.presentation.dto.ChatMessageHeaderResponseDto;
 import com.shurona.chat.mytalk.chat.presentation.dto.ChatMessageRequestData;
 import com.shurona.chat.mytalk.chat.presentation.dto.ChatMessageResponseDto;
-import com.shurona.chat.mytalk.chat.presentation.dto.ChatRoomResponseDto;
+import com.shurona.chat.mytalk.chat.presentation.dto.ChatRoomSsrResponseDto;
 import com.shurona.chat.mytalk.common.session.UserSession;
 import com.shurona.chat.mytalk.friend.application.FriendService;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
@@ -57,7 +57,7 @@ public class ChatController {
         List<ChatRoom> chatRoomListByUser = chatService.findChatRoomListByUser(userInfo);
 
         model.addAttribute("chatRooms",
-            chatRoomListByUser.stream().map(ChatRoomResponseDto::of).toList());
+            chatRoomListByUser.stream().map(ChatRoomSsrResponseDto::of).toList());
         model.addAttribute("userInfo", userInfo);
 
         return "chat/home";
