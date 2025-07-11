@@ -1,7 +1,9 @@
 package com.shurona.chat.mytalk.common.aop;
 
 
+import com.shurona.chat.mytalk.chat.common.exception.ChatException;
 import com.shurona.chat.mytalk.common.dto.ErrorResponseDto;
+import com.shurona.chat.mytalk.common.response.ApiResponse;
 import com.shurona.chat.mytalk.user.common.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,5 +41,14 @@ public class GlobalRestControllerExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleUserException(UserException e) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(e.getMessage());
         return ResponseEntity.status(e.getCode().getStatus()).body(errorResponse);
+    }
+
+    // ChatException 처리
+    @ExceptionHandler(ChatException.class)
+    public ApiResponse<?> handleChatError(ChatException e) {
+        log.error("e: ", e);
+
+        ErrorResponseDto errorResponse = new ErrorResponseDto(e.getMessage());
+        return ApiResponse.error(e.getCode().getStatus(), errorResponse.message());
     }
 }
