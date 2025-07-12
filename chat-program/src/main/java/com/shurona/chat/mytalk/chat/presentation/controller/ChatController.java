@@ -19,7 +19,9 @@ import com.shurona.chat.mytalk.user.application.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -90,8 +92,18 @@ public class ChatController {
         ChatRoom room = chatService.findChatRoomById(roomId);
 
         // 일단 100 줄만 먼저 읽어온다
-        List<ChatLogResponseDto> dtos = chatService.readChatLog(userInfo, room,
+        Page<ChatLog> logs = chatService.readChatLog(userInfo, room,
             PageRequest.of(0, 100));
+
+        Map<Long, Long> userRecentReadMap = chatService.findUserRecentReadMap(room);
+
+        List<ChatLogResponseDto> dtos = logs.stream().map((log) -> {
+            int unreadCount = (int) userRecentReadMap.values().stream()
+                .filter(recentReadId -> recentReadId < log.getId())
+                .count();
+
+            return ChatLogResponseDto.of(log, unreadCount);
+        }).toList();
 
         // 메시지 목록
         model.addAttribute("messages",

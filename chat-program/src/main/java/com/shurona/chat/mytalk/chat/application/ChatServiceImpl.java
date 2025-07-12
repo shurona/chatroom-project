@@ -14,13 +14,13 @@ import com.shurona.chat.mytalk.chat.domain.validator.ChatRoomValidator;
 import com.shurona.chat.mytalk.chat.infrastructure.ChatLogJpaRepository;
 import com.shurona.chat.mytalk.chat.infrastructure.ChatRoomJpaRepository;
 import com.shurona.chat.mytalk.chat.infrastructure.ChatUserJpaRepository;
-import com.shurona.chat.mytalk.chat.presentation.dto.ChatLogResponseDto;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -118,10 +118,11 @@ public class ChatServiceImpl implements ChatService {
 
     @Transactional
     @Override
-    public List<ChatLogResponseDto> readChatLog(User user, ChatRoom room, Pageable pageable) {
+    public Page<ChatLog> readChatLog(User user, ChatRoom room, Pageable pageable) {
 
-        List<ChatLog> logs = chatLogRepository.findByRoom(room, pageable);
+        Page<ChatLog> logs = chatLogRepository.findByRoom(room, pageable);
 
+        // 유저가 채팅방에 속했는 지 확인한다.
         Optional<ChatUser> chatUser = chatUserRepository.findByUserAndRoom(user, room);
         if (chatUser.isEmpty()) {
             throw new ChatException(BAD_REQUEST);
@@ -129,27 +130,21 @@ public class ChatServiceImpl implements ChatService {
 
         // 현재 채팅방에 내용이 없으면 패스
         if (logs.isEmpty()) {
-            return new ArrayList<>();
+            return Page.empty();
         }
 
         // 최근 읽은 기록 업데이트
-        chatUser.get().updateRecentRead(logs.getFirst().getId());
+        chatUser.get().updateRecentRead(logs.toList().getFirst().getId());
 
-        // 읽지 않은 사람을 계산하기 위한 Map 자료구조
-        Map<Long, Long> userRecentReadMap = chatUserRepository.findByRoom(room).stream()
+        return logs;
+    }
+
+    public Map<Long, Long> findUserRecentReadMap(ChatRoom room) {
+        return chatUserRepository.findByRoom(room).stream()
             .collect(toMap(
                 ChatUser::getId,
                 ChatUser::getLastReadMessageId
             ));
-
-        // 여기서 읽은 메시지 별로 ResponseDto를 매핑해준다.
-        return logs.stream().map((log) -> {
-            int unreadCount = (int) userRecentReadMap.values().stream()
-                .filter(recentReadId -> recentReadId < log.getId())
-                .count();
-
-            return ChatLogResponseDto.of(log, unreadCount);
-        }).toList();
     }
 
     @Override
