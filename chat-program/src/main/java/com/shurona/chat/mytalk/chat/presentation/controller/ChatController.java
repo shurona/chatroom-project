@@ -7,7 +7,7 @@ import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
 import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.domain.type.RoomType;
-import com.shurona.chat.mytalk.chat.presentation.dto.ChatLogResponseDto;
+import com.shurona.chat.mytalk.chat.presentation.dto.ChatLogSsrResponseDto;
 import com.shurona.chat.mytalk.chat.presentation.dto.ChatMessageHeaderResponseDto;
 import com.shurona.chat.mytalk.chat.presentation.dto.ChatMessageRequestData;
 import com.shurona.chat.mytalk.chat.presentation.dto.ChatMessageResponseDto;
@@ -97,12 +97,12 @@ public class ChatController {
 
         Map<Long, Long> userRecentReadMap = chatService.findUserRecentReadMap(room);
 
-        List<ChatLogResponseDto> dtos = logs.stream().map((log) -> {
+        List<ChatLogSsrResponseDto> dtos = logs.stream().map((log) -> {
             int unreadCount = (int) userRecentReadMap.values().stream()
                 .filter(recentReadId -> recentReadId < log.getId())
                 .count();
 
-            return ChatLogResponseDto.of(log, unreadCount);
+            return ChatLogSsrResponseDto.of(log, unreadCount);
         }).toList();
 
         // 메시지 목록
@@ -135,11 +135,11 @@ public class ChatController {
         ChatLog chatLog = chatService.writeChat(
             room, userInfo, data.message(), ChatContentType.TEXT);
 
-        ChatLogResponseDto chatLogResponseDto = ChatLogResponseDto.of(chatLog, 0);
+        ChatLogSsrResponseDto chatLogSsrResponseDto = ChatLogSsrResponseDto.of(chatLog, 0);
 
         // 해당 채팅룸으로 구독한 유저들에게 전달을 해준다..
         messagingTemplate.convertAndSend(chatRoomDestination,
-            ChatMessageResponseDto.of(chatLogResponseDto,
+            ChatMessageResponseDto.of(chatLogSsrResponseDto,
                 userInfo.getLoginId(), currentUser.userId()));
 
         return ResponseEntity.ok().build();

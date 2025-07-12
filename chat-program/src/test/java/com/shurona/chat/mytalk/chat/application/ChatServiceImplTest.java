@@ -10,7 +10,7 @@ import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
 import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.domain.type.RoomType;
-import com.shurona.chat.mytalk.chat.presentation.dto.ChatLogResponseDto;
+import com.shurona.chat.mytalk.chat.presentation.dto.response.ChatLogResponseDto;
 import com.shurona.chat.mytalk.config.TestContainerConfig;
 import com.shurona.chat.mytalk.friend.application.FriendService;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
@@ -146,7 +146,8 @@ class ChatServiceImplTest {
         Page<ChatLog> chatLogsWithPage = chatService.readChatLog(userA, room,
             PageRequest.of(0, 20));
         Map<Long, Long> userRecentReadMap = chatService.findUserRecentReadMap(room);
-        List<ChatLogResponseDto> chatLogs = mapToResponseDtos(chatLogsWithPage, userRecentReadMap);
+        List<ChatLogResponseDto> chatLogs = mapToResponseDtos(chatLogsWithPage,
+            userRecentReadMap);
 
         // then
         room = chatService.findChatRoomById(room.getId());

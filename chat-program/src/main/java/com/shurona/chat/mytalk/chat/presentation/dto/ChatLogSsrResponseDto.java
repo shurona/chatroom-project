@@ -5,7 +5,7 @@ import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import java.time.LocalDateTime;
 
-public record ChatLogResponseDto(
+public record ChatLogSsrResponseDto(
     Long id,
     String content,
     ChatContentType type,
@@ -14,8 +14,8 @@ public record ChatLogResponseDto(
     int unreadCount
 ) {
 
-    public static ChatLogResponseDto of(ChatLog log, int unreadCount) {
-        return new ChatLogResponseDto(
+    public static ChatLogSsrResponseDto of(ChatLog log, int unreadCount) {
+        return new ChatLogSsrResponseDto(
             log.getId(), log.getContent(), log.getType(),
             log.getUser(), log.getCreatedAt(), unreadCount);
     }
