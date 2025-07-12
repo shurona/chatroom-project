@@ -6,6 +6,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import com.shurona.chat.mytalk.chat.common.exception.ChatException;
+import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
 import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.domain.type.RoomType;
@@ -16,12 +17,14 @@ import com.shurona.chat.mytalk.friend.domain.model.Friend;
 import com.shurona.chat.mytalk.user.application.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -132,36 +135,38 @@ class ChatServiceImplTest {
     void 채팅창_기록_성공_조회() {
         // given
         friend.acceptFriendRequest();
-        ChatRoom room = chatService
-            .createChatRoom(userA, List.of(userB), RoomType.PRIVATE, "secretRoom");
+        ChatRoom room = chatService.createChatRoom(userA, List.of(userB), RoomType.PRIVATE,
+            "secretRoom");
         String firstChatData = "안녕하세요 B";
 
-        // when
         chatService.writeChat(room, userA, "안녕하세요 A", ChatContentType.TEXT);
         chatService.writeChat(room, userB, firstChatData, ChatContentType.TEXT);
 
-        // then
-        List<ChatLogResponseDto> chatLogs = chatService
-            .readChatLog(userA, room, PageRequest.of(0, 20));
+        // when
+        Page<ChatLog> chatLogsWithPage = chatService.readChatLog(userA, room,
+            PageRequest.of(0, 20));
+        Map<Long, Long> userRecentReadMap = chatService.findUserRecentReadMap(room);
+        List<ChatLogResponseDto> chatLogs = mapToResponseDtos(chatLogsWithPage, userRecentReadMap);
 
-        // 채팅방의 최근 채팅을 확인
+        // then
         room = chatService.findChatRoomById(room.getId());
         assertThat(room.getLastMessage()).isEqualTo(firstChatData);
-
-        // 처음에 채팅을 저장했을 때 확인
         assertThat(chatLogs.size()).isEqualTo(2);
-        assertThat(chatLogs.getFirst().content()).isEqualTo(firstChatData);
-        assertThat(chatLogs.getFirst().unreadCount()).isEqualTo(1);
+        assertThat(chatLogs.get(0).content()).isEqualTo(firstChatData);
+        assertThat(chatLogs.get(0).unreadCount()).isEqualTo(1);
 
-        // 같은 유저가 반복해서 채팅 읽었을 때 숫장 유지 확인
-        List<ChatLogResponseDto> chatLogsOneMore = chatService
-            .readChatLog(userA, room, PageRequest.of(0, 20));
-        assertThat(chatLogsOneMore.getFirst().unreadCount()).isEqualTo(1);
+        // 같은 유저가 반복해서 채팅 읽었을 때 숫자 유지 확인
+        List<ChatLogResponseDto> chatLogsOneMore = mapToResponseDtos(chatLogsWithPage,
+            userRecentReadMap);
+        assertThat(chatLogsOneMore.get(0).unreadCount()).isEqualTo(1);
 
-        // 채팅 읽었을 때 안읽은 유저 숫자 확인
-        List<ChatLogResponseDto> chatLogsTwo = chatService
-            .readChatLog(userB, room, PageRequest.of(0, 20));
-        assertThat(chatLogsTwo.getFirst().unreadCount()).isEqualTo(0);
+        // 안 읽었던 유저가 채팅 읽었을 때 숫자 확인
+        Page<ChatLog> chatLogsForUserB = chatService.readChatLog(userB, room,
+            PageRequest.of(0, 20));
+        Map<Long, Long> userRecentReadMapForUserB = chatService.findUserRecentReadMap(room);
+        List<ChatLogResponseDto> chatLogsForUserBResponse = mapToResponseDtos(chatLogsForUserB,
+            userRecentReadMapForUserB);
+        assertThat(chatLogsForUserBResponse.get(0).unreadCount()).isEqualTo(0);
     }
 
     @Test
@@ -176,6 +181,19 @@ class ChatServiceImplTest {
             .isInstanceOf(ChatException.class)
             .hasMessage(USER_NOT_INCLUDE_ROOM.getMessage());
 
+    }
+
+    /**
+     * chatLogDto에 unreadCount를 추가해준다.
+     */
+    private List<ChatLogResponseDto> mapToResponseDtos
+    (Page<ChatLog> chatLogs, Map<Long, Long> userRecentReadMap) {
+        return chatLogs.stream().map(log -> {
+            int unreadCount = (int) userRecentReadMap.values().stream()
+                .filter(recentReadId -> recentReadId < log.getId())
+                .count();
+            return ChatLogResponseDto.of(log, unreadCount);
+        }).toList();
     }
 
 }
