@@ -1,6 +1,6 @@
 package com.shurona.chat.mytalk.chat.presentation.dto;
 
-public record ChatMessageRequestData(
+public record ChatMessageSsrRequestData(
     String message) {
 
 }
