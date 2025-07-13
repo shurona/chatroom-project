@@ -1,6 +1,7 @@
 package com.shurona.chat.mytalk.chat.application;
 
 import static com.shurona.chat.mytalk.chat.common.exception.ChatErrorCode.BAD_REQUEST;
+import static com.shurona.chat.mytalk.chat.common.exception.ChatErrorCode.USER_NOT_INCLUDE_ROOM;
 import static java.util.stream.Collectors.toMap;
 
 import com.shurona.chat.mytalk.chat.application.cache.ChatCacheInfo;
@@ -125,7 +126,7 @@ public class ChatServiceImpl implements ChatService {
         // 유저가 채팅방에 속했는 지 확인한다.
         Optional<ChatUser> chatUser = chatUserRepository.findByUserAndRoom(user, room);
         if (chatUser.isEmpty()) {
-            throw new ChatException(BAD_REQUEST);
+            throw new ChatException(USER_NOT_INCLUDE_ROOM);
         }
 
         // 현재 채팅방에 내용이 없으면 패스
