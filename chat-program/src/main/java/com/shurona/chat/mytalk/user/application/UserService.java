@@ -16,12 +16,18 @@ public interface UserService {
      */
     public boolean checkLoginIdDuplicated(String loginId);
 
+    /**
+     * 휴대전화의 중복을 확인한다.
+     */
     public boolean checkPhoneNumberDuplicated(String phoneNumber);
 
+    /**
+     * 비밀번호가 맞는 지 확인한다.
+     */
     public boolean checkPasswordCorrect(String inputPassword, String dbPassword);
 
-    /*
-        닉네임을 검색하기 위한 것
+    /**
+     * 닉네임을 검색하기 위한 것
      */
     public List<User> findUserListByNickname(Long userId, String nickname, Pageable pageable);
 
@@ -30,10 +36,19 @@ public interface UserService {
      */
     public User findUserById(Long userId);
 
+    /**
+     * 로그인 아이디를 기준으로 유저 정보를 검색한다.
+     */
     public User findUserByLoginId(String loginId);
 
-    public void findUserList();
+    /**
+     * 유저 목록을 갖고 온다.
+     */
+    public List<User> findUserList(List<Long> userIds);
 
+    /**
+     * 유저 정보를 삭제한다.
+     */
     public void deleteUser(Long userId);
 
 }

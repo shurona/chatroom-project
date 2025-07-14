@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.chat.common;
+package com.shurona.chat.mytalk.chat.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.shurona.chat.mytalk.chat.presentation.controller;
 
 import com.shurona.chat.mytalk.chat.application.ChatService;
-import com.shurona.chat.mytalk.chat.presentation.dtos.ChatRecentReadWithSubRequestDto;
+import com.shurona.chat.mytalk.chat.presentation.dto.ChatRecentReadWithSubRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;

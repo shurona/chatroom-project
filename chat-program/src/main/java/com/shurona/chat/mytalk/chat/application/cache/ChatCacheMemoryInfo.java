@@ -14,6 +14,7 @@ public class ChatCacheMemoryInfo implements ChatCacheInfo {
 
     public boolean checkLastMessageUpdate(ChatRoom room, ChatLog chatLog) {
         boolean isUpdate = false;
+        // 채팅 방마다의 Last Message인지 확인하고 Boolean을 return 해준다.
         LastMessageOfChatDto roomLastTimeChat = chatRoomLastTime.getOrDefault(room.getId(), null);
         if (roomLastTimeChat == null || roomLastTimeChat.lastTime()
             .isBefore(chatLog.getCreatedAt())) {

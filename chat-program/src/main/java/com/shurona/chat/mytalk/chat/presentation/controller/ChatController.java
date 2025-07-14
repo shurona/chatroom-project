@@ -7,11 +7,11 @@ import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
 import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.domain.type.RoomType;
-import com.shurona.chat.mytalk.chat.presentation.dtos.ChatLogResponseDto;
-import com.shurona.chat.mytalk.chat.presentation.dtos.ChatMessageHeaderResponseDto;
-import com.shurona.chat.mytalk.chat.presentation.dtos.ChatMessageRequestData;
-import com.shurona.chat.mytalk.chat.presentation.dtos.ChatMessageResponseDto;
-import com.shurona.chat.mytalk.chat.presentation.dtos.ChatRoomResponseDto;
+import com.shurona.chat.mytalk.chat.presentation.dto.ChatLogSsrResponseDto;
+import com.shurona.chat.mytalk.chat.presentation.dto.ChatMessageHeaderResponseDto;
+import com.shurona.chat.mytalk.chat.presentation.dto.ChatMessageResponseDto;
+import com.shurona.chat.mytalk.chat.presentation.dto.ChatMessageSsrRequestData;
+import com.shurona.chat.mytalk.chat.presentation.dto.ChatRoomSsrResponseDto;
 import com.shurona.chat.mytalk.common.session.UserSession;
 import com.shurona.chat.mytalk.friend.application.FriendService;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
@@ -19,7 +19,9 @@ import com.shurona.chat.mytalk.user.application.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -57,7 +59,7 @@ public class ChatController {
         List<ChatRoom> chatRoomListByUser = chatService.findChatRoomListByUser(userInfo);
 
         model.addAttribute("chatRooms",
-            chatRoomListByUser.stream().map(ChatRoomResponseDto::of).toList());
+            chatRoomListByUser.stream().map(ChatRoomSsrResponseDto::of).toList());
         model.addAttribute("userInfo", userInfo);
 
         return "chat/home";
@@ -90,8 +92,18 @@ public class ChatController {
         ChatRoom room = chatService.findChatRoomById(roomId);
 
         // 일단 100 줄만 먼저 읽어온다
-        List<ChatLogResponseDto> dtos = chatService.readChatLog(userInfo, room,
+        Page<ChatLog> logs = chatService.readChatLog(userInfo, room,
             PageRequest.of(0, 100));
+
+        Map<Long, Long> userRecentReadMap = chatService.findUserRecentReadMap(room);
+
+        List<ChatLogSsrResponseDto> dtos = logs.stream().map((log) -> {
+            int unreadCount = (int) userRecentReadMap.values().stream()
+                .filter(recentReadId -> recentReadId < log.getId())
+                .count();
+
+            return ChatLogSsrResponseDto.of(log, unreadCount);
+        }).toList();
 
         // 메시지 목록
         model.addAttribute("messages",
@@ -109,7 +121,7 @@ public class ChatController {
     public ResponseEntity<Void> writeMessage(
         HttpSession session,
         @PathVariable("id") Long roomId,
-        @RequestBody ChatMessageRequestData data
+        @RequestBody ChatMessageSsrRequestData data
     ) {
         // 유저 정보를 갖고 온다.
         UserSession currentUser = (UserSession) session.getAttribute(LOGIN_USER);
@@ -123,11 +135,11 @@ public class ChatController {
         ChatLog chatLog = chatService.writeChat(
             room, userInfo, data.message(), ChatContentType.TEXT);
 
-        ChatLogResponseDto chatLogResponseDto = ChatLogResponseDto.of(chatLog, 0);
+        ChatLogSsrResponseDto chatLogSsrResponseDto = ChatLogSsrResponseDto.of(chatLog, 0);
 
         // 해당 채팅룸으로 구독한 유저들에게 전달을 해준다..
         messagingTemplate.convertAndSend(chatRoomDestination,
-            ChatMessageResponseDto.of(chatLogResponseDto,
+            ChatMessageResponseDto.of(chatLogSsrResponseDto,
                 userInfo.getLoginId(), currentUser.userId()));
 
         return ResponseEntity.ok().build();

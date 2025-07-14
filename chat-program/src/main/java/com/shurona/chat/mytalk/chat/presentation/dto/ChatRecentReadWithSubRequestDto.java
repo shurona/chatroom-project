@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.chat.presentation.dtos;
+package com.shurona.chat.mytalk.chat.presentation.dto;
 
 public record ChatRecentReadWithSubRequestDto(
     Long id
