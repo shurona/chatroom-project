@@ -62,9 +62,10 @@ public class SecurityConfig {
                     "/api/v1/users/sign-up", "/api/v1/login", "/api/v1/refresh") // 회원 가입, 로그인, 리프레시
                 .permitAll()
                 .requestMatchers(
-                    "/home", "/ssr/**", "/socket/chat", "/css/**", "/*.ico", "/error")
+                    "/home", "/ssr/**", "/css/**", "/*.ico", "/error") // static 및 ssr 용
                 .permitAll() // 기존 friends, chats page 접근 허용 설정
-
+                .requestMatchers("/socket/chat/**") // socket 관련, 별도 인증을 처리한다.
+                .permitAll()
                 .anyRequest()
                 .authenticated()
             )
