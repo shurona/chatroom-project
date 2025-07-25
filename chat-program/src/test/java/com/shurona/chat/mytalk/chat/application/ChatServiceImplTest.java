@@ -144,7 +144,7 @@ class ChatServiceImplTest {
         chatService.writeChat(room, userB, firstChatData, ChatContentType.TEXT);
 
         // when
-        ChatLog chatLog = chatService.writeChat(room, userA, "안녕하세요 A", ChatContentType.TEXT);
+        ChatLog lastChatLog = chatService.writeChat(room, userA, "안녕하세요 A", ChatContentType.TEXT);
 
         room = chatService.findChatRoomById(room.getId());
         List<ChatUser> list = room.getChatUserList().stream()
@@ -153,19 +153,19 @@ class ChatServiceImplTest {
         ChatUser chatUser = list.getFirst();
 
         // then
-        assertThat(chatUser.getLastReadMessageId()).isEqualTo(3);
+        assertThat(chatUser.getLastReadMessageId()).isEqualTo(lastChatLog.getId());
     }
 
     @Test
     void 채팅창_기록_성공_조회() {
         // given
         friend.acceptFriendRequest();
-        ChatRoom room = chatService.createChatRoom(userA, List.of(userB), RoomType.PRIVATE,
-            "secretRoom");
+        ChatRoom room = chatService.createChatRoom(
+            userA, List.of(userB), RoomType.PRIVATE, "secretRoom");
         String firstChatData = "안녕하세요 B";
 
-        chatService.writeChat(room, userA, "안녕하세요 A", ChatContentType.TEXT);
-        chatService.writeChat(room, userB, firstChatData, ChatContentType.TEXT);
+        ChatLog firstChatLog =
+            chatService.writeChat(room, userA, "안녕하세요 A", ChatContentType.TEXT);
 
         // when
         // 채팅 기록을 읽어온다.
@@ -179,15 +179,19 @@ class ChatServiceImplTest {
 
         // then
         room = chatService.findChatRoomById(room.getId());
-        assertThat(room.getLastMessage()).isEqualTo(firstChatData);
-        assertThat(chatLogs.size()).isEqualTo(2);
-        assertThat(chatLogs.get(0).content()).isEqualTo(firstChatData);
-        assertThat(chatLogs.get(0).unreadCount()).isEqualTo(1);
+        assertThat(room.getLastMessage()).isEqualTo(firstChatLog.getContent());
+        assertThat(chatLogs.size()).isEqualTo(1);
+        assertThat(chatLogs.getFirst().content()).isEqualTo(firstChatLog.getContent());
+        assertThat(chatLogs.getFirst().unreadCount()).isEqualTo(1);
 
         // 같은 유저가 반복해서 채팅 읽었을 때 숫자 유지 확인
         List<ChatLogResponseDto> chatLogsOneMore = mapToResponseDtos(chatLogsWithPage,
             userRecentReadMap);
-        assertThat(chatLogsOneMore.get(0).unreadCount()).isEqualTo(1);
+        assertThat(chatLogsOneMore.getFirst().unreadCount()).isEqualTo(1);
+
+        // 새 입력이 들어 왓을 때
+        ChatLog lastChatLog = chatService.writeChat(
+            room, userB, firstChatData, ChatContentType.TEXT);
 
         // 안 읽었던 유저가 채팅 읽었을 때 숫자 확인
         Page<ChatLog> chatLogsForUserB = chatService.readChatLog(userB, room,
@@ -195,7 +199,10 @@ class ChatServiceImplTest {
         Map<Long, Long> userRecentReadMapForUserB = chatService.findUserRecentReadMap(room);
         List<ChatLogResponseDto> chatLogsForUserBResponse = mapToResponseDtos(chatLogsForUserB,
             userRecentReadMapForUserB);
-        assertThat(chatLogsForUserBResponse.get(0).unreadCount()).isEqualTo(0);
+        // userB가 기록한 것은 userA가 안읽어야 한다.
+        assertThat(chatLogsForUserBResponse.getFirst().unreadCount()).isEqualTo(1);
+        // 이전에 userA가 기록한 것은 userB가 읽었으므로 0이 된다.
+        assertThat(chatLogsForUserBResponse.get(1).unreadCount()).isEqualTo(0);
     }
 
     @Test
