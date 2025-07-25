@@ -100,20 +100,23 @@ public class ChatServiceImpl implements ChatService {
 
         // 채팅을 기록할 해도 되는지 검증한다.
         chatRoomValidator.writeChatValidator(room, user);
+        ChatUser chatUser = chatUserRepository.findByUserAndRoom(user, room)
+            .orElseThrow(() -> new ChatException(USER_NOT_INCLUDE_ROOM));
 
         // 저장
         ChatLog chatLog = chatLogRepository.save(ChatLog.createLog(room, user, chatData, type));
 
-        // 메모리에서 최근 시간을 업데이트 해준다.
-        // TODO: Redis로 변경
-        boolean isUpdate = chatCacheInfo.checkLastMessageUpdate(room, chatLog);
-
-        if (isUpdate) {
+        // 메모리에서 최근 시간을 업데이트 해준다. TODO: Redis로 변경
+        if (chatCacheInfo.checkLastMessageUpdate(room, chatLog)) {
             // 최근 메시지 업데이트
             chatRoomRepository.updateLastMessageAndTime(
                 room.getId(), chatLog.getContent(), chatLog.getCreatedAt());
-        }
 
+            // 자신이 입력했으므로 최근 읽은 메시지 아이디를 확인하고 업데이트 하면 저장한다.
+            if (chatUser.updateRecentRead(chatLog.getId())) {
+                chatUserRepository.save(chatUser);
+            }
+        }
         return chatLog;
     }
 
@@ -140,6 +143,12 @@ public class ChatServiceImpl implements ChatService {
         return logs;
     }
 
+    @Override
+    public List<ChatLog> findChatLogByIds(List<Long> chatLogIds) {
+        return chatLogRepository.findAllById(chatLogIds);
+    }
+
+    @Override
     public Map<Long, Long> findUserRecentReadMap(ChatRoom room) {
         return chatUserRepository.findByRoom(room).stream()
             .collect(toMap(
@@ -147,6 +156,28 @@ public class ChatServiceImpl implements ChatService {
                 ChatUser::getLastReadMessageId
             ));
     }
+
+    @Override
+    public Map<Long, Integer> findUnreadCountByChatRoomId(
+        ChatRoom room, List<ChatLog> chatLogList) {
+
+        List<ChatUser> chatUserList = chatUserRepository.findByRoom(room);
+
+        // 채팅방의 유저가 읽지 않은 정보를 갱신한다.
+        chatCacheInfo.calculateUnreadCount(room, chatLogList, chatUserList);
+
+        // 미리 index를 추출해놓는다.
+        long leftIndex = chatLogList.isEmpty() ? 0 : chatLogList.getFirst().getId();
+        long rightIndex = chatLogList.isEmpty() ? 0 : chatLogList.getLast().getId();
+
+        // 채팅방의 유저가 읽지 않은 메시지의 숫자를 갖고 온다.
+        return chatCacheInfo.getUnreadCountByChatRoomIdAndLogRange(
+            room.getId(),
+            Math.min(leftIndex, rightIndex),
+            Math.max(leftIndex, rightIndex)
+        );
+    }
+
 
     @Override
     public ChatRoom inviteUser(User user, User friend, ChatRoom room) {
