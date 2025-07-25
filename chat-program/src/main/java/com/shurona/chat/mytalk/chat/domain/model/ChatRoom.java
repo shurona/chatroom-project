@@ -58,14 +58,16 @@ public class ChatRoom extends BaseEntity {
     /*
         static method pattern
      */
-    public static ChatRoom createChatRoom(String name, RoomType type, User user,
-        List<User> userList) {
+    public static ChatRoom createChatRoom(
+        String name, RoomType type, User user, List<User> userList) {
+
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.name = name;
         chatRoom.type = type;
         chatRoom.lastMessage = "";
         chatRoom.lastTime = LocalDateTime.now();
 
+        // 채팅방의 유저는 자신을 ADMIN으로 추가한다.
         chatRoom.getChatUserList()
             .add(ChatUser.createChatUser(user, chatRoom, RoomRole.ADMIN));
 
