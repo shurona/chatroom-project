@@ -6,9 +6,11 @@ import com.shurona.chat.mytalk.user.infrastructure.RefreshTokenRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
+/**
+ * 현재 사용 중이지 않은 클래스(RedisTemplate을 사용해서 직접 통신한다)
+ */
+//@Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
