@@ -8,6 +8,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import com.shurona.chat.mytalk.chat.common.exception.ChatException;
 import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
+import com.shurona.chat.mytalk.chat.domain.model.ChatUser;
 import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.domain.type.RoomType;
 import com.shurona.chat.mytalk.chat.presentation.dto.response.ChatLogResponseDto;
@@ -132,6 +133,30 @@ class ChatServiceImplTest {
     }
 
     @Test
+    void 채팅_작성시_자기작성_최근로그_저장() {
+        // given
+        friend.acceptFriendRequest();
+        ChatRoom room = chatService.createChatRoom(userA, List.of(userB), RoomType.PRIVATE,
+            "secretRoom");
+        String firstChatData = "안녕하세요 B";
+
+        chatService.writeChat(room, userA, "안녕하세요 A", ChatContentType.TEXT);
+        chatService.writeChat(room, userB, firstChatData, ChatContentType.TEXT);
+
+        // when
+        ChatLog chatLog = chatService.writeChat(room, userA, "안녕하세요 A", ChatContentType.TEXT);
+
+        room = chatService.findChatRoomById(room.getId());
+        List<ChatUser> list = room.getChatUserList().stream()
+            .filter(cu -> cu.getUser().getId().equals(userA.getId())).toList();
+
+        ChatUser chatUser = list.getFirst();
+
+        // then
+        assertThat(chatUser.getLastReadMessageId()).isEqualTo(3);
+    }
+
+    @Test
     void 채팅창_기록_성공_조회() {
         // given
         friend.acceptFriendRequest();
@@ -143,9 +168,12 @@ class ChatServiceImplTest {
         chatService.writeChat(room, userB, firstChatData, ChatContentType.TEXT);
 
         // when
+        // 채팅 기록을 읽어온다.
         Page<ChatLog> chatLogsWithPage = chatService.readChatLog(userA, room,
             PageRequest.of(0, 20));
+        // 읽음 상태 기록 을 갖고 온다.
         Map<Long, Long> userRecentReadMap = chatService.findUserRecentReadMap(room);
+        // 합쳐준다.
         List<ChatLogResponseDto> chatLogs = mapToResponseDtos(chatLogsWithPage,
             userRecentReadMap);
 
