@@ -10,6 +10,7 @@ public enum ChatErrorCode {
 
     // 400 접근
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 입력값입니다."),
+    INVALID_JWT_TOKEN(HttpStatus.BAD_REQUEST, "JWT 정보가 잘못되었습니다."),
     USER_NOT_INCLUDE_ROOM(HttpStatus.BAD_REQUEST, "유저가 채팅방에 속해있지 않습니다."),
     PRIVATE_CHATROOM_ONLY_ONE(HttpStatus.BAD_REQUEST, "개인톡은 하나만 존재해야 한다."),
     PRIVATE_CHAT_JUST_ONE_REQUIRED(HttpStatus.BAD_REQUEST, "개인톡은 한 명만 만들 수 있습니다."),

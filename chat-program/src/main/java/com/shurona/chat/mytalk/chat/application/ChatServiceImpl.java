@@ -36,6 +36,7 @@ public class ChatServiceImpl implements ChatService {
     private final ChatLogJpaRepository chatLogRepository;
     private final ChatUserJpaRepository chatUserRepository;
 
+    // 채팅을 위한 Cache
     private final ChatCacheInfo chatCacheInfo;
 
     // domain service
@@ -166,9 +167,13 @@ public class ChatServiceImpl implements ChatService {
         // 채팅방의 유저가 읽지 않은 정보를 갱신한다.
         chatCacheInfo.calculateUnreadCount(room, chatLogList, chatUserList);
 
-        // 미리 index를 추출해놓는다.
-        long leftIndex = chatLogList.isEmpty() ? 0 : chatLogList.getFirst().getId();
-        long rightIndex = chatLogList.isEmpty() ? 0 : chatLogList.getLast().getId();
+        // 채팅 방이 비어있으면 빈 Map을 반환한다.
+        if (chatLogList.isEmpty()) {
+            return Map.of();
+        }
+        
+        long leftIndex = chatLogList.getFirst().getId();
+        long rightIndex = chatLogList.getLast().getId();
 
         // 채팅방의 유저가 읽지 않은 메시지의 숫자를 갖고 온다.
         return chatCacheInfo.getUnreadCountByChatRoomIdAndLogRange(

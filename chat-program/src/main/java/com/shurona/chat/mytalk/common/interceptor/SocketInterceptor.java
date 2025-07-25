@@ -35,7 +35,7 @@ public class SocketInterceptor implements ChannelInterceptor {
             );
 
             if (!jwtUtils.checkValidJwtToken(token)) {
-                throw new ChatException(ChatErrorCode.PRIVATE_CHAT_JUST_ONE_REQUIRED);
+                throw new ChatException(ChatErrorCode.INVALID_JWT_TOKEN);
             }
 
             Claims bodyFromJwt = jwtUtils.getBodyFromJwt(token);
