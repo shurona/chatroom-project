@@ -15,38 +15,48 @@ public interface ChatService {
     /**
      * 채팅방 생성
      */
-    public ChatRoom createChatRoom(
+    ChatRoom createChatRoom(
         User user, List<User> invitedUserList, RoomType type, String name);
 
     /**
      * 개인톡을 유저와 파트너로 조회하기
      */
-    public ChatRoom findPrivateChatRoomByUser(User user, User partner);
+    ChatRoom findPrivateChatRoomByUser(User user, User partner);
 
     /**
      * id를 기준으로 채팅방 단일 조회
      */
-    public ChatRoom findChatRoomById(Long id);
+    ChatRoom findChatRoomById(Long id);
 
     /**
      * 내가 속한 채팅방 목록을 갖고 온다.
      */
-    public List<ChatRoom> findChatRoomListByUser(User user);
+    List<ChatRoom> findChatRoomListByUser(User user);
 
     /**
      * 채팅 입력
      */
-    public ChatLog writeChat(ChatRoom room, User user, String chatData, ChatContentType type);
+    ChatLog writeChat(ChatRoom room, User user, String chatData, ChatContentType type);
 
     /**
      * 채팅 목록 조회
      */
-    public Page<ChatLog> readChatLog(User user, ChatRoom room, Pageable pageable);
-    
+    Page<ChatLog> readChatLog(User user, ChatRoom room, Pageable pageable);
+
+    /**
+     *
+     */
+    List<ChatLog> findChatLogByIds(List<Long> chatLogIds);
+
     /**
      * 채팅의 유저가 최근까지 읽은 아이디의 목록을 갖고 온다.
      */
-    public Map<Long, Long> findUserRecentReadMap(ChatRoom room);
+    Map<Long, Long> findUserRecentReadMap(ChatRoom room);
+
+    /**
+     * 채팅 방의 유저가 읽지 않은 메시지의 숫자를 갖고 온다.
+     */
+    Map<Long, Integer> findUnreadCountByChatRoomId(ChatRoom room, List<ChatLog> chatLogList);
 
     /*
     ------------------------------------------------------------------------------

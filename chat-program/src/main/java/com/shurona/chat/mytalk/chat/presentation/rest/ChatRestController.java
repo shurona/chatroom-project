@@ -5,6 +5,7 @@ import com.shurona.chat.mytalk.chat.common.exception.ChatErrorCode;
 import com.shurona.chat.mytalk.chat.common.exception.ChatException;
 import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
+import com.shurona.chat.mytalk.chat.presentation.dto.endpoint.ReadNotificationDto;
 import com.shurona.chat.mytalk.chat.presentation.dto.request.ChatMessageRequestDto;
 import com.shurona.chat.mytalk.chat.presentation.dto.request.ChatRoomCreateRequestDto;
 import com.shurona.chat.mytalk.chat.presentation.dto.response.ChatLogResponseDto;
@@ -14,6 +15,7 @@ import com.shurona.chat.mytalk.common.response.PageResponse;
 import com.shurona.chat.mytalk.common.security.UserDetailsImpl;
 import com.shurona.chat.mytalk.user.application.UserService;
 import com.shurona.chat.mytalk.user.domain.model.User;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,11 +40,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ChatRestController {
 
+    private static String chatRoomDestinationPrefix = "/topic/room/";
+
+    // Service
     private final ChatService chatService;
     private final UserService userService;
 
+    // chat 구독 유저들에게 전달
+    private final SimpMessagingTemplate messagingTemplate;
+
     @PostMapping("/rooms/private")
-    public ApiResponse<ChatRoomResponseDto> createChatRoom(
+    public ApiResponse<ChatRoomResponseDto> createPrivateChatRoom(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody ChatRoomCreateRequestDto requestDto
     ) {
@@ -78,7 +87,10 @@ public class ChatRestController {
         ChatLog chatLog = chatService.writeChat(
             room, userInfo, requestDto.message(), requestDto.type());
 
-        // 여기서는 ChatLog의 아이디만 만들어준다.
+        // 해당 채팅룸으로 구독한 유저들에게 전달을 해준다..
+        messagingTemplate.convertAndSend(
+            chatRoomDestinationPrefix + roomId, ChatLogResponseDto.of(chatLog, 0));
+
         return ApiResponse.success(chatLog.getId());
     }
 
@@ -93,7 +105,7 @@ public class ChatRestController {
 
         return ApiResponse.success(
             chatRoomListByUser.stream().map(
-                cr -> ChatRoomResponseDto.of(cr)
+                ChatRoomResponseDto::of
             ).toList()
         );
     }
@@ -114,19 +126,21 @@ public class ChatRestController {
 
         // 채팅은 최근 내역을 먼저 불러온다.
         Sort sortInfo = Sort.by(Order.desc("createdAt"));
-
         Page<ChatLog> logs = chatService.readChatLog(userInfo, room,
             PageRequest.of(0, 100, sortInfo));
 
-        Map<Long, Long> userRecentReadMap = chatService.findUserRecentReadMap(room);
-
+        // 채팅 로그 읽지 않은 유저 숫자를 저장 한다.
+        Map<Long, Integer> unreadCountByChatRoomId = chatService.findUnreadCountByChatRoomId(room,
+            logs.toList());
         List<ChatLogResponseDto> chatLogResponseDtos = logs.stream().map((log) -> {
-            int unreadCount = (int) userRecentReadMap.values().stream()
-                .filter(recentReadId -> recentReadId < log.getId())
-                .count();
-
+            int unreadCount = unreadCountByChatRoomId.get(log.getId());
             return ChatLogResponseDto.of(log, unreadCount);
         }).toList();
+
+        // 읽었음 표시해준다. 여기서는 추가되는 Message가 없으므로 null로 전송한다.
+        messagingTemplate.convertAndSend(
+            chatRoomDestinationPrefix + roomId + "/read-notifications", new ReadNotificationDto(
+                userInfo.getId(), LocalDateTime.now()));
 
         // Front에서는 반대로 표시되어야 하므로 반환해준다.
         return ApiResponse.success(PageResponse.from(logs, chatLogResponseDtos.reversed()));
