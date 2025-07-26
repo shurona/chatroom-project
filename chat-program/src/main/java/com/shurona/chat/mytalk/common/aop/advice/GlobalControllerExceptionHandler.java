@@ -13,7 +13,7 @@ public class GlobalControllerExceptionHandler {
         ChatErrorCode code = e.getCode();
         model.addAttribute("errorMessage", code.getMessage());
         model.addAttribute("status", code.getStatus());
-        return "error/customError"; //
+        return "error/customError";
     }
 
 }
