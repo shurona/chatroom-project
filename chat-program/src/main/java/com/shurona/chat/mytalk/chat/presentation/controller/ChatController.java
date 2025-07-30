@@ -39,11 +39,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ChatController {
 
+    // static variable
+    private final static String chatRoomDestination = "/topic/room/";
     // Service
     private final ChatService chatService;
     private final UserService userService;
     private final FriendService friendService;
-
     // chat 전달 용
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -128,17 +129,13 @@ public class ChatController {
         User userInfo = userService.findUserById(currentUser.userId());
         ChatRoom room = chatService.findChatRoomById(roomId);
 
-        // 구독된 채팅방을 지칭한다.
-        // TODO: 어디다 저장하는 것이 좋은 것일까
-        String chatRoomDestination = "/topic/room/" + roomId;
-
         ChatLog chatLog = chatService.writeChat(
             room, userInfo, data.message(), ChatContentType.TEXT);
 
         ChatLogSsrResponseDto chatLogSsrResponseDto = ChatLogSsrResponseDto.of(chatLog, 0);
 
         // 해당 채팅룸으로 구독한 유저들에게 전달을 해준다..
-        messagingTemplate.convertAndSend(chatRoomDestination,
+        messagingTemplate.convertAndSend(chatRoomDestination + roomId,
             ChatMessageResponseDto.of(chatLogSsrResponseDto,
                 userInfo.getLoginId(), currentUser.userId()));
 
