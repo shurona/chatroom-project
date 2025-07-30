@@ -29,8 +29,6 @@ public class SocketInterceptor implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         StompCommand command = accessor.getCommand();
 
-        System.out.println(accessor);
-
         if (StompCommand.CONNECT.equals(command)) {
             handleConnect(accessor);
         } else if (StompCommand.SEND.equals(command)) {
