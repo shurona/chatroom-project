@@ -1,5 +1,6 @@
 package com.shurona.chat.mytalk.common.config;
 
+import com.shurona.chat.mytalk.common.handler.CustomStompErrorHandler;
 import com.shurona.chat.mytalk.common.interceptor.SocketInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -16,11 +17,15 @@ public class SocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final SocketInterceptor socketInterceptor;
 
+    private final CustomStompErrorHandler customStompErrorHandler;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("socket/chat")
             .setAllowedOrigins("http://localhost:3000")
             .withSockJS();
+
+        registry.setErrorHandler(customStompErrorHandler);
     }
 
     @Override
