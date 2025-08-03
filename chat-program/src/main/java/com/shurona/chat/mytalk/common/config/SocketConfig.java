@@ -15,8 +15,10 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class SocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    // interceptor
     private final SocketInterceptor socketInterceptor;
 
+    // error handler
     private final CustomStompErrorHandler customStompErrorHandler;
 
     @Override
@@ -35,8 +37,9 @@ public class SocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
+        // 클라이언트가 서버로 메시지를 보낼 때 사용할 prefix 설정
         registry.setApplicationDestinationPrefixes("/app");
-
+        // 서버가 클라이언트에게 메시지를 전달할 때 사용할 topic, queue 브로커 활성화
         registry.enableSimpleBroker("/topic", "/queue");
     }
 }
