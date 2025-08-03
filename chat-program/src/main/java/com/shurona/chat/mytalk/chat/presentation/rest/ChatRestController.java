@@ -1,11 +1,16 @@
 package com.shurona.chat.mytalk.chat.presentation.rest;
 
+import static com.shurona.chat.mytalk.chat.infrastructure.redis.dto.MessageType.CHAT;
+import static com.shurona.chat.mytalk.chat.infrastructure.redis.dto.MessageType.READ_NOTIFICATION;
+
 import com.shurona.chat.mytalk.chat.application.ChatService;
 import com.shurona.chat.mytalk.chat.common.exception.ChatErrorCode;
 import com.shurona.chat.mytalk.chat.common.exception.ChatException;
 import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
-import com.shurona.chat.mytalk.chat.presentation.dto.endpoint.ReadNotificationDto;
+import com.shurona.chat.mytalk.chat.infrastructure.redis.dto.BaseMessage;
+import com.shurona.chat.mytalk.chat.infrastructure.redis.dto.ChatMessageDto;
+import com.shurona.chat.mytalk.chat.infrastructure.redis.dto.ReadNotificationDto;
 import com.shurona.chat.mytalk.chat.presentation.dto.request.ChatMessageRequestDto;
 import com.shurona.chat.mytalk.chat.presentation.dto.request.ChatRoomCreateRequestDto;
 import com.shurona.chat.mytalk.chat.presentation.dto.response.ChatLogResponseDto;
@@ -24,6 +29,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,14 +47,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ChatRestController {
 
-    private static String chatRoomDestinationPrefix = "/topic/room/";
-
     // Service
     private final ChatService chatService;
     private final UserService userService;
 
     // chat 구독 유저들에게 전달
     private final SimpMessagingTemplate messagingTemplate;
+
+    // ChannelTopic
+    private final ChannelTopic chatRoomTopic;
+
+    // redisTemplate
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @PostMapping("/rooms/private")
     public ApiResponse<ChatRoomResponseDto> createPrivateChatRoom(
@@ -70,6 +81,9 @@ public class ChatRestController {
         );
     }
 
+    /**
+     * 채팅을 기록하는 메소드
+     */
     @PostMapping("/rooms/{roomId}/messages")
     public ApiResponse<Long> writeChatMessage(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -87,13 +101,19 @@ public class ChatRestController {
         ChatLog chatLog = chatService.writeChat(
             room, userInfo, requestDto.message(), requestDto.type());
 
-        // 해당 채팅룸으로 구독한 유저들에게 전달을 해준다..
-        messagingTemplate.convertAndSend(
-            chatRoomDestinationPrefix + roomId, ChatLogResponseDto.of(chatLog, 0));
+        BaseMessage<ChatMessageDto> chatMessageDto = BaseMessage.from(
+            CHAT, roomId, ChatMessageDto.of(chatLog, 0)
+        );
+
+        // Redis의 pub/sub 기능을 사용하여 topic 채널에 채팅 메시지를 발행합니다.
+        redisTemplate.convertAndSend(chatRoomTopic.getTopic(), chatMessageDto);
 
         return ApiResponse.success(chatLog.getId());
     }
 
+    /**
+     * 채팅방 목록을 조회한다.
+     */
     @GetMapping("/rooms")
     public ApiResponse<List<ChatRoomResponseDto>> getChatroomList(
         @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -137,10 +157,10 @@ public class ChatRestController {
             return ChatLogResponseDto.of(log, unreadCount);
         }).toList();
 
-        // 읽었음 표시해준다. 여기서는 추가되는 Message가 없으므로 null로 전송한다.
-        messagingTemplate.convertAndSend(
-            chatRoomDestinationPrefix + roomId + "/read-notifications", new ReadNotificationDto(
-                userInfo.getId(), LocalDateTime.now()));
+        // Redis의 pub/sub 기능을 사용하여 topic 채널에 채팅 메시지를 발행합니다.
+        redisTemplate.convertAndSend(chatRoomTopic.getTopic(),
+            BaseMessage.from(READ_NOTIFICATION, roomId,
+                new ReadNotificationDto(userInfo.getId(), LocalDateTime.now())));
 
         // Front에서는 반대로 표시되어야 하므로 반환해준다.
         return ApiResponse.success(PageResponse.from(logs, chatLogResponseDtos.reversed()));
