@@ -7,7 +7,7 @@ import com.shurona.chat.mytalk.friend.common.exception.FriendException;
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
 import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;
 import com.shurona.chat.mytalk.friend.domain.service.FriendChecker;
-import com.shurona.chat.mytalk.friend.infrastructure.FriendJpaRepository;
+import com.shurona.chat.mytalk.friend.infrastructure.jpa.FriendJpaRepository;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import java.util.List;
 import java.util.Map;
@@ -122,7 +122,7 @@ public class FriendServiceImpl implements FriendService, FriendChecker {
     public Friend changeStatusById(Long friendId, FriendRequest status) {
         Friend friend = friendRepository.findById(friendId).orElseThrow(
             () -> new FriendException(INVALID_INPUT));
-        
+
         if (status.equals(FriendRequest.ACCEPTED)) {
             friend.acceptFriendRequest();
         } else if (status.equals(FriendRequest.REFUSED)) {

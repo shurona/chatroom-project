@@ -3,6 +3,7 @@ package com.shurona.chat.mytalk.friend.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
+import com.shurona.chat.mytalk.friend.infrastructure.jpa.FriendJpaRepository;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import java.util.ArrayList;
 import java.util.List;

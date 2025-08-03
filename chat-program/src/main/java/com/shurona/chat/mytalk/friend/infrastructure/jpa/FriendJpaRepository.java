@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.friend.infrastructure;
+package com.shurona.chat.mytalk.friend.infrastructure.jpa;
 
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
 import com.shurona.chat.mytalk.friend.domain.model.type.FriendRequest;

@@ -3,8 +3,9 @@ package com.shurona.chat.mytalk.user.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.shurona.chat.mytalk.friend.domain.model.Friend;
-import com.shurona.chat.mytalk.friend.infrastructure.FriendJpaRepository;
+import com.shurona.chat.mytalk.friend.infrastructure.jpa.FriendJpaRepository;
 import com.shurona.chat.mytalk.user.domain.model.User;
+import com.shurona.chat.mytalk.user.infrastructure.jpa.UserJpaRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

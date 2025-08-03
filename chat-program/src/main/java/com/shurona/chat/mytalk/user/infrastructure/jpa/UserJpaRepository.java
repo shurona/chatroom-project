@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.user.infrastructure;
+package com.shurona.chat.mytalk.user.infrastructure.jpa;
 
 import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.user.domain.vo.UserPhoneNumber;

@@ -5,7 +5,7 @@ import static com.shurona.chat.mytalk.user.common.exception.UserErrorCode.USER_N
 import com.shurona.chat.mytalk.user.common.exception.UserException;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import com.shurona.chat.mytalk.user.domain.vo.UserPhoneNumber;
-import com.shurona.chat.mytalk.user.infrastructure.UserJpaRepository;
+import com.shurona.chat.mytalk.user.infrastructure.jpa.UserJpaRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
