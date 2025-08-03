@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.chat.presentation.dto.endpoint;
+package com.shurona.chat.mytalk.chat.infrastructure.redis.dto;
 
 import java.time.LocalDateTime;
 
