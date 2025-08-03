@@ -12,9 +12,9 @@ import com.shurona.chat.mytalk.chat.domain.model.ChatUser;
 import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.domain.type.RoomType;
 import com.shurona.chat.mytalk.chat.domain.validator.ChatRoomValidator;
-import com.shurona.chat.mytalk.chat.infrastructure.ChatLogJpaRepository;
-import com.shurona.chat.mytalk.chat.infrastructure.ChatRoomJpaRepository;
-import com.shurona.chat.mytalk.chat.infrastructure.ChatUserJpaRepository;
+import com.shurona.chat.mytalk.chat.infrastructure.jpa.ChatLogJpaRepository;
+import com.shurona.chat.mytalk.chat.infrastructure.jpa.ChatRoomJpaRepository;
+import com.shurona.chat.mytalk.chat.infrastructure.jpa.ChatUserJpaRepository;
 import com.shurona.chat.mytalk.user.domain.model.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -171,7 +171,7 @@ public class ChatServiceImpl implements ChatService {
         if (chatLogList.isEmpty()) {
             return Map.of();
         }
-        
+
         long leftIndex = chatLogList.getFirst().getId();
         long rightIndex = chatLogList.getLast().getId();
 

@@ -1,4 +1,4 @@
-package com.shurona.chat.mytalk.chat.infrastructure;
+package com.shurona.chat.mytalk.chat.infrastructure.jpa;
 
 import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
