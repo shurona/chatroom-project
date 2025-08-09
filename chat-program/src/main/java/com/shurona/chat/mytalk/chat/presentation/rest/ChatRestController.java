@@ -1,13 +1,17 @@
 package com.shurona.chat.mytalk.chat.presentation.rest;
 
+import static com.shurona.chat.mytalk.chat.common.variable.StaticVariable.KAFKA_CHAT_READ_TOPIC_ID;
+import static com.shurona.chat.mytalk.chat.common.variable.StaticVariable.KAFKA_CHAT_WRITTEN_TOPIC_ID;
 import static com.shurona.chat.mytalk.chat.infrastructure.redis.dto.MessageType.CHAT;
 import static com.shurona.chat.mytalk.chat.infrastructure.redis.dto.MessageType.READ_NOTIFICATION;
+import static com.shurona.chat.mytalk.common.utils.KafkaEventSerializer.serialize;
 
 import com.shurona.chat.mytalk.chat.application.ChatService;
 import com.shurona.chat.mytalk.chat.common.exception.ChatErrorCode;
 import com.shurona.chat.mytalk.chat.common.exception.ChatException;
 import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
+import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.infrastructure.redis.dto.BaseMessage;
 import com.shurona.chat.mytalk.chat.infrastructure.redis.dto.ChatMessageDto;
 import com.shurona.chat.mytalk.chat.infrastructure.redis.dto.ReadNotificationDto;
@@ -31,6 +35,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,6 +64,9 @@ public class ChatRestController {
 
     // redisTemplate
     private final RedisTemplate<String, Object> redisTemplate;
+
+    // Kafka Template
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @PostMapping("/rooms/private")
     public ApiResponse<ChatRoomResponseDto> createPrivateChatRoom(
@@ -98,15 +106,23 @@ public class ChatRestController {
         User userInfo = userService.findUserById(userDetails.userId());
         ChatRoom room = chatService.findChatRoomById(roomId);
 
-        ChatLog chatLog = chatService.writeChat(
-            room, userInfo, requestDto.message(), requestDto.type());
+//        ChatLog chatLog = chatService.writeChat(
+//            room, userInfo, requestDto.message(), requestDto.type());
+
+        ChatLog chatLog = ChatLog.createLog(
+            room, userInfo, requestDto.message(), ChatContentType.TEXT
+        );
 
         BaseMessage<ChatMessageDto> chatMessageDto = BaseMessage.from(
             CHAT, roomId, ChatMessageDto.of(chatLog, 0)
         );
 
         // Redis의 pub/sub 기능을 사용하여 topic 채널에 채팅 메시지를 발행합니다.
-        redisTemplate.convertAndSend(chatRoomTopic.getTopic(), chatMessageDto);
+        // redisTemplate.convertAndSend(chatRoomTopic.getTopic(), chatMessageDto);
+
+        kafkaTemplate.send(
+            KAFKA_CHAT_WRITTEN_TOPIC_ID,
+            serialize(chatMessageDto));
 
         return ApiResponse.success(chatLog.getId());
     }
@@ -158,9 +174,16 @@ public class ChatRestController {
         }).toList();
 
         // Redis의 pub/sub 기능을 사용하여 topic 채널에 채팅 메시지를 발행합니다.
-        redisTemplate.convertAndSend(chatRoomTopic.getTopic(),
-            BaseMessage.from(READ_NOTIFICATION, roomId,
-                new ReadNotificationDto(userInfo.getId(), LocalDateTime.now())));
+//        redisTemplate.convertAndSend(chatRoomTopic.getTopic(),
+//            BaseMessage.from(READ_NOTIFICATION, roomId,
+//                new ReadNotificationDto(userInfo.getId(), LocalDateTime.now())));
+
+        // kafka로 알람을 보낸다.
+        ReadNotificationDto payload = new ReadNotificationDto(userInfo.getId(),
+            LocalDateTime.now());
+        kafkaTemplate.send(KAFKA_CHAT_READ_TOPIC_ID, serialize(BaseMessage.from(
+            READ_NOTIFICATION, roomId, payload
+        )));
 
         // Front에서는 반대로 표시되어야 하므로 반환해준다.
         return ApiResponse.success(PageResponse.from(logs, chatLogResponseDtos.reversed()));
