@@ -46,6 +46,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
 
+    // actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     // MYSQL
     runtimeOnly 'com.mysql:mysql-connector-j'
 
@@ -61,6 +64,12 @@ dependencies {
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    // test kafka
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
 
     // testcontainers
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'

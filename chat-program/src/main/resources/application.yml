@@ -14,7 +14,38 @@ spring:
       port: ${REDIS_PORT}
       username: ${REDIS_USERNAME}
       password: ${REDIS_PASSWORD}
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      # 기본 설정
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
+      # 성능 최적화
+      retries: 3
+      batch-size: 32768
+      buffer-memory: 67108864
+      compression-type: snappy
+
+      # 안정성 설정
+      acks: all
+      enable-idempotence: true
+      linger-ms: 10
+      request-timeout-ms: 30000
+      delivery-timeout-ms: 120000
+
+    consumer:
+      # 기본 설정
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+      # Consumer Group 설정
+      #      group-id: chat-service-group
+      #      client-id: chat-consumer
+
+      # Offset 관리
+      auto-offset-reset: latest
+      enable-auto-commit: false
   jpa:
     hibernate:
       ddl-auto: update
@@ -24,6 +55,7 @@ spring:
 #        show_sql: true # sql
 #        format_sql: true # SQL
 #        highlight_sql: true # SQL
+
 
 jwt:
   secret:
@@ -35,3 +67,28 @@ server:
   servlet:
     session:
       tracking-modes: cookie
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    # 전체 애플리케이션 로그 레벨 (기본값: INFO)
+    root: INFO
+
+    # 특정 패키지의 로그 레벨을 DEBUG로 설정
+    #    com.shurona.chat: DEBUG
+
+    # Spring Framework 관련 DEBUG 로그
+    #    org.springframework: DEBUG
+    #    org.springframework.web: DEBUG
+
+    # Kafka 관련 DEBUG 로그
+#    org.apache.kafka.clients.consumer.internals.ConsumerCoordinator: DEBUG
