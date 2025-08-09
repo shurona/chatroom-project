@@ -1,5 +1,7 @@
 package com.shurona.chat.mytalk.chat.infrastructure.redis.subscriber;
 
+import static com.shurona.chat.mytalk.chat.common.variable.StaticVariable.chatRoomDestinationPrefix;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shurona.chat.mytalk.chat.infrastructure.redis.dto.BaseMessage;
@@ -13,10 +15,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-//public class RedisSubscriber {
 public class RedisSubscriber {
-
-    private static String chatRoomDestinationPrefix = "/topic/room/";
 
     private final ObjectMapper objectMapper;
     private final SimpMessageSendingOperations messagingTemplate;
