@@ -8,9 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class ChatCacheMemoryInfo implements ChatCacheInfo {
 
     // 채팅방의 최근 메시지를 캐시해서 갖고 온다.
@@ -24,8 +23,8 @@ public class ChatCacheMemoryInfo implements ChatCacheInfo {
         boolean isUpdate = false;
         // 채팅 방마다의 Last Message인지 확인하고 Boolean을 return 해준다.
         LastMessageOfChatDto roomLastTimeChat = chatRoomLastTime.getOrDefault(room.getId(), null);
-        if (roomLastTimeChat == null || roomLastTimeChat.lastTime()
-            .isBefore(chatLog.getCreatedAt())) {
+        if (roomLastTimeChat == null
+            || roomLastTimeChat.lastTime().isBefore(chatLog.getCreatedAt())) {
             chatRoomLastTime.put(
                 room.getId(),
                 new LastMessageOfChatDto(chatLog.getContent(), chatLog.getCreatedAt()));
