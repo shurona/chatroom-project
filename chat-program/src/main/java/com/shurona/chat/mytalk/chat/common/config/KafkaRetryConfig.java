@@ -3,17 +3,20 @@ package com.shurona.chat.mytalk.chat.common.config;
 import static com.shurona.chat.mytalk.chat.common.variable.StaticVariable.KAFKA_CHAT_WRITTEN_TOPIC_ID;
 
 import com.shurona.chat.mytalk.chat.presentation.kafka.ChatDeadLetterRecoverer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.EnableKafkaRetryTopic;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.retrytopic.RetryTopicConfiguration;
 import org.springframework.kafka.retrytopic.RetryTopicConfigurationBuilder;
 import org.springframework.kafka.support.EndpointHandlerMethod;
 
-//@Configuration
-//@EnableKafkaRetryTopic
+@Configuration
+@EnableKafkaRetryTopic
 public class KafkaRetryConfig {
 
 
-    //    @Bean
+    @Bean
     public RetryTopicConfiguration chatRetryTopicConfiguration(
         KafkaTemplate<String, String> kafkaTemplate
     ) {

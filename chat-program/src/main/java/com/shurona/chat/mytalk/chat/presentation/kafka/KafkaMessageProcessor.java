@@ -56,8 +56,6 @@ public class KafkaMessageProcessor {
             );
 
             deliverWriteChatLog(chatMessageDtoBaseMessage);
-
-            throw new ChatException(ChatErrorCode.USER_NOT_INCLUDE_ROOM);
         } catch (Exception e) {
             log.error("[채팅 작성 전달 에러 발생] {}", message, e);
             throw new ChatException(ChatErrorCode.USER_NOT_INCLUDE_ROOM);
