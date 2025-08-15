@@ -25,10 +25,10 @@ public class RedisTokenService {
 
         long expirationTime = JwtUtils.REFRESH_TOKEN_TIME / 1000; // 초 단위로 변환
 
-        // 사용자 ID로 토큰 조회
+        // userId를 키로 refreshToken 저장
         redisTemplate.opsForValue()
             .set(userKey, token, expirationTime, TimeUnit.SECONDS);
-        // 토큰으로 사용자 ID 조회
+        // refresh 키로 기준으로 userId 저장
         redisTemplate.opsForValue()
             .set(tokenKey, userId.toString(), expirationTime, TimeUnit.SECONDS);
     }
