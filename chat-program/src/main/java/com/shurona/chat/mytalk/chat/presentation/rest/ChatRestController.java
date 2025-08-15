@@ -11,7 +11,6 @@ import com.shurona.chat.mytalk.chat.common.exception.ChatErrorCode;
 import com.shurona.chat.mytalk.chat.common.exception.ChatException;
 import com.shurona.chat.mytalk.chat.domain.model.ChatLog;
 import com.shurona.chat.mytalk.chat.domain.model.ChatRoom;
-import com.shurona.chat.mytalk.chat.domain.type.ChatContentType;
 import com.shurona.chat.mytalk.chat.infrastructure.redis.dto.BaseMessage;
 import com.shurona.chat.mytalk.chat.infrastructure.redis.dto.ChatMessageDto;
 import com.shurona.chat.mytalk.chat.infrastructure.redis.dto.ReadNotificationDto;
@@ -106,19 +105,16 @@ public class ChatRestController {
         User userInfo = userService.findUserById(userDetails.userId());
         ChatRoom room = chatService.findChatRoomById(roomId);
 
-//        ChatLog chatLog = chatService.writeChat(
-//            room, userInfo, requestDto.message(), requestDto.type());
+        ChatLog chatLog = chatService.writeChat(
+            room, userInfo, requestDto.message(), requestDto.type());
 
-        ChatLog chatLog = ChatLog.createLog(
-            room, userInfo, requestDto.message(), ChatContentType.TEXT
-        );
+//        ChatLog chatLog = ChatLog.createLog(
+//            room, userInfo, requestDto.message(), ChatContentType.TEXT
+//        );
 
         BaseMessage<ChatMessageDto> chatMessageDto = BaseMessage.from(
             CHAT, roomId, ChatMessageDto.of(chatLog, 0)
         );
-
-        // Redis의 pub/sub 기능을 사용하여 topic 채널에 채팅 메시지를 발행합니다.
-        // redisTemplate.convertAndSend(chatRoomTopic.getTopic(), chatMessageDto);
 
         kafkaTemplate.send(
             KAFKA_CHAT_WRITTEN_TOPIC_ID,
@@ -172,11 +168,6 @@ public class ChatRestController {
             int unreadCount = unreadCountByChatRoomId.get(log.getId());
             return ChatLogResponseDto.of(log, unreadCount);
         }).toList();
-
-        // Redis의 pub/sub 기능을 사용하여 topic 채널에 채팅 메시지를 발행합니다.
-//        redisTemplate.convertAndSend(chatRoomTopic.getTopic(),
-//            BaseMessage.from(READ_NOTIFICATION, roomId,
-//                new ReadNotificationDto(userInfo.getId(), LocalDateTime.now())));
 
         // kafka로 알람을 보낸다.
         ReadNotificationDto payload = new ReadNotificationDto(userInfo.getId(),
