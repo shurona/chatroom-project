@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.shurona.chat.mytalk.chat.application.cache.dtos.LastMessageOfChatDto;
 import com.shurona.chat.mytalk.common.variable.RedisProperty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
@@ -14,7 +15,6 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @RequiredArgsConstructor
@@ -71,22 +71,26 @@ public class RedisConfig {
     }
 
     /**
-     * String to String Redis Template
+     * LastMessageOfChatDto Redis Template
+     * 채팅의 마지막 메시지와 기록을 확인하기 위한 Redis
      */
-    //    @Bean
-    public RedisTemplate<String, String> stringRedisTemplate() {
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+    @Bean
+    public RedisTemplate<String, LastMessageOfChatDto> chatRoomLastTimeTemplate(
+        RedisConnectionFactory connectionFactory) {
 
+        // Jackson2JsonRedisSerializer 사용
+        Jackson2JsonRedisSerializer<LastMessageOfChatDto> serializer = new Jackson2JsonRedisSerializer<>(
+            objectMapper(), LastMessageOfChatDto.class);
+        RedisTemplate<String, LastMessageOfChatDto> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
-        // Serializer 설정
-        redisTemplate.setKeySerializer(RedisSerializer.string());
-        redisTemplate.setValueSerializer(RedisSerializer.string());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(serializer);
 
-        // Hash Serializer 설정
-        redisTemplate.setHashKeySerializer(RedisSerializer.string());
-        redisTemplate.setHashValueSerializer(RedisSerializer.string());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(serializer);
 
         return redisTemplate;
     }
+
 }
