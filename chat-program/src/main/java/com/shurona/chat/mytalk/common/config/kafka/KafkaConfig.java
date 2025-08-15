@@ -2,7 +2,6 @@ package com.shurona.chat.mytalk.common.config.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -19,9 +18,6 @@ import org.springframework.util.backoff.FixedBackOff;
 @EnableKafka
 @Configuration
 public class KafkaConfig {
-
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String serverUrl;
 
     /**
      * Kafka Template
