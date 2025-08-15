@@ -8,8 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.transaction.annotation.Transactional;
 
+@EmbeddedKafka
 @ExtendWith(TestContainerConfig.class)
 @Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)

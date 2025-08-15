@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: test
   application:
     name: user-service
   datasource:
@@ -10,8 +12,12 @@ spring:
     hibernate:
       ddl-auto: create
   kafka:
-    bootstrap-servers: localhost:9092
+    enabled: false
 
 jwt:
   secret:
     key: 7Leo7JeF7Leo7JeF7Leo7JeF7Leo7JeF7Leo7JeF7Leo7JeF7Leo7JeF
+
+chat:
+  broker:
+    type: simple
